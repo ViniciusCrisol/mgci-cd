@@ -1,0 +1,54 @@
+{
+	"compilerOptions": {
+		"lib": ["es2016"],
+		"target": "es2016",
+		"emitDecoratorMetadata": true,
+		"experimentalDecorators": true,
+		"module": "commonjs",
+		"paths": {
+			"@src/*": ["src/*"],
+			"@test/*": ["test/*"]
+		},
+		"rootDirs": [
+			"src",
+			"test"
+		],
+		"baseUrl": ".",
+		"moduleResolution": "node",
+		"resolveJsonModule": true,
+		"noUncheckedSideEffectImports": true,
+		"rewriteRelativeImportExtensions": true,
+		"outDir": "dist",
+		"sourceMap": true,
+		"removeComments": true,
+		"esModuleInterop": true,
+		"isolatedModules": true,
+		"allowSyntheticDefaultImports": true,
+		"forceConsistentCasingInFileNames": true,
+		"strict": true,
+		"noImplicitAny": true,
+		"noImplicitThis": true,
+		"strictNullChecks": true,
+		"strictFunctionTypes": true,
+		"strictBindCallApply": true,
+		"useUnknownInCatchVariables": true,
+		"strictBuiltinIteratorReturn": true,
+		"strictPropertyInitialization": true,
+		"alwaysStrict": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noImplicitReturns": true,
+		"noImplicitOverride": true,
+		"noUncheckedIndexedAccess": true,
+		"noFallthroughCasesInSwitch": true,
+		"noPropertyAccessFromIndexSignature": true
+	},
+	"include": [
+		"./src/**/*.ts",
+		"./test/**/*.ts"
+	],
+	"exclude": [
+		"./dist",
+		"./node_modules/*"
+	]
+}

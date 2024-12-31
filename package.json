@@ -1,0 +1,31 @@
+{
+	"name": "mgci-cd",
+	"version": "0.0.1",
+	"main": "src/main.ts",
+	"engines": {
+		"node": "20.18.0"
+	},
+	"scripts": {
+		"build": "npx tsc && tsc-alias",
+		"test:unity": "npx jest --projects ./src",
+		"test:functional": "npx jest --projects ./test",
+		"start": "npm run build && node ./dist/src/main.js main"
+	},
+	"devDependencies": {
+		"@types/jest": "^29.5.14",
+		"jest": "^29.7.0",
+		"ts-jest": "^29.2.5",
+		"tsc-alias": "^1.8.10",
+		"typescript": "^5.7.2"
+	},
+	"author": {
+		"name": "Vinícius P. Crisol",
+		"email": "vinicius.crisol@hotmail.com"
+	},
+	"license": "MIT",
+	"keywords": [
+		"CI/CD",
+		"Magalu Cloud"
+	],
+	"description": "An open-source CI/CD system for Magalu Cloud."
+}
