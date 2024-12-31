@@ -7,8 +7,8 @@
 	},
 	"scripts": {
 		"build": "npx tsc && tsc-alias",
-		"test:unity": "npx jest --projects ./src",
-		"test:functional": "npx jest --projects ./test",
+		"test:unity": "npx jest --projects ./src --coverage",
+		"test:functional": "npx jest --projects ./test --coverage",
 		"start": "npm run build && node ./dist/src/main.js main"
 	},
 	"devDependencies": {

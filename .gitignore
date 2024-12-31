@@ -10,6 +10,9 @@ yarn-error.log*
 lerna-debug.log*
 .pnpm-debug.log*
 
+# Tests
+coverage
+
 # Yarn v2
 .pnp.*
 .yarn/cache
