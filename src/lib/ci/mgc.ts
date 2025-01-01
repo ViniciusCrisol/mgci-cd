@@ -2,6 +2,11 @@ export type Instance = {
 	id: string;
 	name: string;
 	status: string;
+	network: {
+		user: string;
+		publicIP: string;
+		privateIP: string;
+	};
 };
 
 export enum InstanceStatus {
@@ -17,12 +22,7 @@ export enum InstanceStatus {
 }
 
 export interface MGCDAO {
-	createInstance(
-		name: string,
-		image: string,
-		sshKeyName: string,
-		machineType: string,
-	): Promise<Instance>;
+	createInstance(name: string, image: string, sshKeyName: string, machineType: string): Promise<Instance>;
 	getInstanceByID(id: string): Promise<Instance | undefined>;
 	getInstanceByName(name: string): Promise<Instance | undefined>;
 }

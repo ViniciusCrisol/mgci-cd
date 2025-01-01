@@ -1,11 +1,12 @@
 import { Specs } from "@src/lib/ci";
+import { SetupLBCommandBuilder } from "@src/lib/ci/command-builders/setup-lb-command-builder";
 import { Instance, InstanceStatus, MGCDAO } from "@src/lib/ci/mgc";
 import { SSHFactory } from "@src/lib/ci/ssh";
 import { ExecutionError } from "@src/lib/utils/errors";
 import { infiniteLoop } from "@src/lib/utils/infinite-loop";
 
 export class SetupLBStep {
-	constructor(private mgcDAO: MGCDAO, private sshFactory: SSHFactory) {}
+	constructor(private readonly mgcDAO: MGCDAO, private readonly sshFactory: SSHFactory) {}
 
 	async execute(specs: Specs): Promise<void> {
 		const lbInstance = await this.mgcDAO.getInstanceByName(specs.lb.name);
@@ -16,8 +17,11 @@ export class SetupLBStep {
 		}
 	}
 
+	async update(specs: Specs, lbInstance: Instance): Promise<void> {}
+
 	async create(specs: Specs): Promise<void> {
 		const lbInstance = await this.createLBInstance(specs);
+		await this.setupLBInstance(specs, lbInstance);
 	}
 
 	async createLBInstance(specs: Specs): Promise<Instance> {
@@ -50,5 +54,12 @@ export class SetupLBStep {
 		});
 	}
 
-	async update(specs: Specs, lbInstance: Instance): Promise<void> {}
+	async setupLBInstance(specs: Specs, lbInstance: Instance): Promise<void> {
+		const setupLBCommandBuilder = new SetupLBCommandBuilder(specs.lb.rollout.size, specs.lb.rollout.interval);
+		const setupLBCommand = setupLBCommandBuilder.build();
+		const sshClient = this.sshFactory.createSSHClient(lbInstance.network.privateIP, lbInstance.network.user);
+		await infiniteLoop(async () => {
+			await sshClient.run(setupLBCommand);
+		});
+	}
 }
