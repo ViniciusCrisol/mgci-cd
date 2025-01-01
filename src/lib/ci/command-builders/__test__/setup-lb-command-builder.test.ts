@@ -12,7 +12,7 @@ describe("SetupLBCommandBuilder tests", () => {
 	});
 
 	it("should replace placeholders with provided values", () => {
-		const mockCommandContent = "rollout size: {{default_rollout_size}}, interval: {{default_rollout_interval}}";
+		const mockCommandContent = "rollout size: {{rollout_size}}, interval: {{rollout_interval}}";
 		(readFileSync as jest.Mock).mockReturnValue(mockCommandContent);
 
 		const setupLBCommandBuilder = new SetupLBCommandBuilder(5, 5000);
@@ -24,7 +24,7 @@ describe("SetupLBCommandBuilder tests", () => {
 
 	it("should replace multiple placeholders with provided values", () => {
 		const mockCommandContent =
-			"rollout size: {{default_rollout_size}}, interval: {{default_rollout_interval}}, timeout: {{default_rollout_interval}}";
+			"rollout size: {{rollout_size}}, interval: {{rollout_interval}}, timeout: {{rollout_interval}}";
 		(readFileSync as jest.Mock).mockReturnValue(mockCommandContent);
 
 		const setupLBCommandBuilder = new SetupLBCommandBuilder(20, 3000);

@@ -5,8 +5,8 @@ cat <<EOF | sudo tee /version_config.json > /dev/null
 {
     "ips": [],
     "rollout": {
-        "size": {{default_rollout_size}},
-        "interval": {{default_rollout_interval}}
+        "size": {{rollout_size}},
+        "interval": {{rollout_interval}}
     }
 }
 EOF
