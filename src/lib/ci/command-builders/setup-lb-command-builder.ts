@@ -1,15 +1,16 @@
+import { LBConfig } from "@src/lib/ci";
 import { readFileSync } from "fs";
 import { join } from "path";
 
 const setupLBCommandPath = join(__dirname, "commands", "setup-lb-command.sh");
 
 export class SetupLBCommandBuilder {
-	constructor(private readonly rolloutSize: number, private readonly rolloutInterval: number) {}
+	constructor(private readonly lbConfig: LBConfig) {}
 
 	build() {
 		const setupLBCommand = readFileSync(setupLBCommandPath, "utf-8");
 		return `bash -c -e '\n${setupLBCommand
-			.replace(/{{rollout_size}}/g, this.rolloutSize.toString())
-			.replace(/{{rollout_interval}}/g, this.rolloutInterval.toString())}'`;
+			.replace(/{{config_file}}/g, this.lbConfig.file)
+			.replace(/{{config_json}}/g, JSON.stringify(this.lbConfig, null, 4))}'`;
 	}
 }

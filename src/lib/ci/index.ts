@@ -4,10 +4,16 @@ export type Specs = {
 		image: string;
 		sshKeyName: string;
 		machineType: string;
-		rollout: {
-			size: number;
-			interval: number;
-		};
+		config: LBConfig;
+	};
+};
+
+export type LBConfig = {
+	ips: string[];
+	file: string;
+	rollout: {
+		size: number;
+		interval: number;
 	};
 };
 

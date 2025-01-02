@@ -1,36 +1,32 @@
 import { SetupLBCommandBuilder } from "@src/lib/ci/command-builders/setup-lb-command-builder";
-import { readFileSync } from "fs";
-import { join } from "path";
 
-jest.mock("fs");
+const expectedCommand = `bash -c -e '
+sudo DEBIAN_FRONTEND=noninteractive apt-get update -y 2> /dev/null
+sudo DEBIAN_FRONTEND=noninteractive apt-get install nginx -y 2> /dev/null
+
+cat <<EOF | sudo tee /config.json > /dev/null
+{
+    "ips": [],
+    "file": "/config.json",
+    "rollout": {
+        "size": 5,
+        "interval": 5000
+    }
+}
+EOF
+'`;
 
 describe("SetupLBCommandBuilder tests", () => {
-	const setupLBCommandPath = join(__dirname, "..", "commands", "setup-lb-command.sh");
-
-	beforeEach(() => {
-		jest.resetAllMocks();
-	});
-
-	it("should replace placeholders with provided values", () => {
-		const mockCommandContent = "rollout size: {{rollout_size}}, interval: {{rollout_interval}}";
-		(readFileSync as jest.Mock).mockReturnValue(mockCommandContent);
-
-		const setupLBCommandBuilder = new SetupLBCommandBuilder(5, 5000);
+	it("should replace placeholders with provided values using real file", () => {
+		const setupLBCommandBuilder = new SetupLBCommandBuilder({
+			ips: [],
+			file: "/config.json",
+			rollout: {
+				size: 5,
+				interval: 5000,
+			},
+		});
 		const setupLBCommand = setupLBCommandBuilder.build();
-
-		expect(readFileSync).toHaveBeenCalledWith(setupLBCommandPath, "utf-8");
-		expect(setupLBCommand).toBe("bash -c -e '\nrollout size: 5, interval: 5000'");
-	});
-
-	it("should replace multiple placeholders with provided values", () => {
-		const mockCommandContent =
-			"rollout size: {{rollout_size}}, interval: {{rollout_interval}}, timeout: {{rollout_interval}}";
-		(readFileSync as jest.Mock).mockReturnValue(mockCommandContent);
-
-		const setupLBCommandBuilder = new SetupLBCommandBuilder(20, 3000);
-		const setupLBCommand = setupLBCommandBuilder.build();
-
-		expect(readFileSync).toHaveBeenCalledWith(setupLBCommandPath, "utf-8");
-		expect(setupLBCommand).toBe("bash -c -e '\nrollout size: 20, interval: 3000, timeout: 3000'");
+		expect(setupLBCommand).toBe(expectedCommand);
 	});
 });
