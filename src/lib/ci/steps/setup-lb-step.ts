@@ -1,14 +1,14 @@
 import { Specs } from "@src/lib/ci";
 import { SetupLBCommandBuilder } from "@src/lib/ci/command-builders/setup-lb-command-builder";
-import { Instance, InstanceStatus, MGCDAO } from "@src/lib/ci/mgc";
+import { Instance, InstanceStatus, MACHINE_TYPE_WEIGHT, MGCDAO } from "@src/lib/ci/mgc";
 import { SSHFactory } from "@src/lib/ci/ssh";
-import { ExecutionError } from "@src/lib/utils/errors";
+import { ExecutionError, ValidationError } from "@src/lib/utils/errors";
 import { infiniteLoop } from "@src/lib/utils/infinite-loop";
 
 export class SetupLBStep {
 	constructor(private readonly mgcDAO: MGCDAO, private readonly sshFactory: SSHFactory) {}
 
-	async execute(specs: Specs): Promise<void> {
+	public async execute(specs: Specs): Promise<void> {
 		const lbInstance = await this.mgcDAO.getInstanceByName(specs.lb.name);
 		if (lbInstance) {
 			await this.update(specs, lbInstance);
@@ -17,20 +17,34 @@ export class SetupLBStep {
 		}
 	}
 
-	async update(specs: Specs, lbInstance: Instance): Promise<void> {}
-
-	async create(specs: Specs): Promise<void> {
-		const lbInstance = await this.createLBInstance(specs);
-		await this.setupLBInstance(specs, lbInstance);
+	private async update(specs: Specs, lbInstance: Instance): Promise<void> {
+		if (specs.lb.machineType !== lbInstance.machineType) {
+			// The machine type has already been validated in a previous module,
+			// ensuring the map will always return a valid value. No additional
+			// checks are necessary here.
+			if ((MACHINE_TYPE_WEIGHT[specs.lb.machineType] || 0) < (MACHINE_TYPE_WEIGHT[lbInstance.machineType] || 0)) {
+				throw new ValidationError(
+					`Cannot downgrade machine type from ${lbInstance.machineType} to ${specs.lb.machineType}`,
+				);
+			}
+			await this.mgcDAO.retypeInstance(lbInstance.id, specs.lb.machineType);
+			await this.checkLBInstance(lbInstance.id);
+		}
 	}
 
-	async createLBInstance(specs: Specs): Promise<Instance> {
-		const { id } = await this.mgcDAO.createInstance(
+	private async create(specs: Specs): Promise<Instance> {
+		let lbInstance = await this.mgcDAO.createInstance(
 			specs.lb.name,
 			specs.lb.image,
 			specs.lb.sshKeyName,
 			specs.lb.machineType,
 		);
+		lbInstance = await this.checkLBInstance(lbInstance.id);
+		await this.setupLBInstance(specs, lbInstance);
+		return lbInstance;
+	}
+
+	private async checkLBInstance(id: string): Promise<Instance> {
 		return await infiniteLoop(async () => {
 			const lbInstance = await this.mgcDAO.getInstanceByID(id);
 			if (lbInstance) {
@@ -49,14 +63,19 @@ export class SetupLBStep {
 				) {
 					throw new ExecutionError(`Load Balancer creation failed with status: ${lbInstance.status}`);
 				}
+				if (
+					lbInstance.status === InstanceStatus.RETYPING_ERROR ||
+					lbInstance.status === InstanceStatus.RETYPING_ERROR_QUOTA
+				) {
+					throw new ExecutionError(`Load Balancer retyping failed with status: ${lbInstance.status}`);
+				}
 			}
 			throw new ExecutionError("Load Balancer not ready yet");
 		});
 	}
 
-	async setupLBInstance(specs: Specs, lbInstance: Instance): Promise<void> {
-		const setupLBCommandBuilder = new SetupLBCommandBuilder(specs.lb.rollout.size, specs.lb.rollout.interval);
-		const setupLBCommand = setupLBCommandBuilder.build();
+	private async setupLBInstance(specs: Specs, lbInstance: Instance): Promise<void> {
+		const setupLBCommand = new SetupLBCommandBuilder(specs.lb.config).build();
 		const sshClient = this.sshFactory.createSSHClient(lbInstance.network.privateIP, lbInstance.network.user);
 		await infiniteLoop(async () => {
 			await sshClient.run(setupLBCommand);

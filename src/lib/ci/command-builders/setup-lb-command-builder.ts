@@ -7,7 +7,7 @@ const setupLBCommandPath = join(__dirname, "commands", "setup-lb-command.sh");
 export class SetupLBCommandBuilder {
 	constructor(private readonly lbConfig: LBConfig) {}
 
-	build() {
+	public build() {
 		const setupLBCommand = readFileSync(setupLBCommandPath, "utf-8");
 		return `bash -c -e '\n${setupLBCommand
 			.replace(/{{config_file}}/g, this.lbConfig.file)
