@@ -1,4 +1,4 @@
-import { Instance, InstanceStatus, MGCDAO, checkupInstance } from "@src/lib/ci/mgc";
+import { InstanceStatus, MGCDAO, checkupInstance } from "@src/lib/ci/mgc";
 import { ExecutionError } from "@src/lib/utils/errors";
 
 jest.mock("@src/lib/utils/infinite-loop", () => ({
@@ -19,7 +19,7 @@ describe("checkupInstance tests", () => {
 
 	it("should return the instance if status is COMPLETED", async () => {
 		const id = "1";
-		const instance: Instance = {
+		const instance = {
 			id: id,
 			name: "test-instance",
 			status: InstanceStatus.COMPLETED,
@@ -51,7 +51,7 @@ describe("checkupInstance tests", () => {
 		];
 		for (const status of creationErrorStatuses) {
 			const id = "1";
-			const instance: Instance = {
+			const instance = {
 				id: id,
 				name: "test-instance",
 				status: status,
@@ -74,7 +74,7 @@ describe("checkupInstance tests", () => {
 		const retypingErrorStatuses = [InstanceStatus.RETYPING_ERROR, InstanceStatus.RETYPING_ERROR_QUOTA];
 		for (const status of retypingErrorStatuses) {
 			const id = "1";
-			const instance: Instance = {
+			const instance = {
 				id: id,
 				name: "test-instance",
 				status: status,
