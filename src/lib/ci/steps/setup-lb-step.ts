@@ -18,12 +18,16 @@ export class SetupLBStep {
 	}
 
 	private async update(specs: Specs, lbInstance: Instance): Promise<void> {
-		if (specs.lb.machineType !== lbInstance.machineType) {
-			// The machine type has already been validated in a previous module,
-			// ensuring the map will always return a valid value. No additional
-			// checks are necessary here.
+		// The machine type has already been validated in a previous module,
+		// ensuring the map will always return a valid value. No additional
+		// checks are necessary here.
+		if (
+			specs.lb.machineType !== lbInstance.machineType &&
+			MACHINE_TYPE[lbInstance.machineType] &&
+			MACHINE_TYPE[specs.lb.machineType]
+		) {
 			if (
-				(MACHINE_TYPE[specs.lb.machineType]?.weight || 0) < (MACHINE_TYPE[lbInstance.machineType]?.weight || 0)
+				(MACHINE_TYPE[specs.lb.machineType]?.weight ?? 0) < (MACHINE_TYPE[lbInstance.machineType]?.weight ?? 0)
 			) {
 				throw new ValidationError(
 					`Cannot downgrade machine type from ${lbInstance.machineType} to ${specs.lb.machineType}`,

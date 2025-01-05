@@ -117,6 +117,29 @@ describe("SetupLBStep tests", () => {
 			delete MACHINE_TYPE["old-type"];
 			delete MACHINE_TYPE["new-type"];
 		});
+
+		it("should not retype the instance if machine type is the same", async () => {
+			specs.lb.machineType = "same-type";
+			lbInstance.machineType = "same-type";
+			MACHINE_TYPE["same-type"] = { name: "same-type", weight: 1 };
+
+			await setupLBStep["update"](specs, lbInstance);
+
+			expect(checkupInstance).not.toHaveBeenCalled();
+			expect(mgcDAO.retypeInstance).not.toHaveBeenCalled();
+
+			delete MACHINE_TYPE["same-type"];
+		});
+
+		it("should handle undefined weights in MACHINE_TYPE", async () => {
+			specs.lb.machineType = "undefined-weight-type";
+			lbInstance.machineType = "another-undefined-weight-type";
+
+			await setupLBStep["update"](specs, lbInstance);
+
+			expect(checkupInstance).not.toHaveBeenCalled();
+			expect(mgcDAO.retypeInstance).not.toHaveBeenCalled();
+		});
 	});
 
 	describe("create tests", () => {
