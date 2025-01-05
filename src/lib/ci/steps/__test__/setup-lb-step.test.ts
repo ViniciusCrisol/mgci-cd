@@ -1,12 +1,14 @@
 import { Specs } from "@src/lib/ci";
 import { checkupInstance, Instance, InstanceStatus, MACHINE_TYPE, MGCDAO } from "@src/lib/ci/mgc";
-import { SSHFactory } from "@src/lib/ci/ssh";
+import { SSHClient, SSHFactory } from "@src/lib/ci/ssh";
 import { SetupLBStep } from "@src/lib/ci/steps/setup-lb-step";
 import { ValidationError } from "@src/lib/utils/errors";
 
+jest.mock("@src/lib/utils/infinite-loop", () => ({
+	infiniteLoop: jest.fn((fn) => fn()),
+}));
 jest.mock("@src/lib/ci/mgc");
 jest.mock("@src/lib/ci/ssh");
-jest.mock("@src/lib/utils/infinite-loop");
 jest.mock("@src/lib/ci/command-builders/setup-lb-command-builder");
 
 describe("SetupLBStep tests", () => {
@@ -14,6 +16,7 @@ describe("SetupLBStep tests", () => {
 	let lbInstance: Instance;
 
 	let mgcDAO: jest.Mocked<MGCDAO>;
+	let sshClient: jest.Mocked<SSHClient>;
 	let sshFactory: jest.Mocked<SSHFactory>;
 	let setupLBStep: SetupLBStep;
 
@@ -51,6 +54,9 @@ describe("SetupLBStep tests", () => {
 			getInstanceByID: jest.fn(),
 			getInstanceByName: jest.fn(),
 			retypeInstance: jest.fn(),
+		});
+		sshClient = jest.mocked({
+			run: jest.fn(),
 		});
 		sshFactory = jest.mocked({
 			createSSHClient: jest.fn(),
@@ -110,6 +116,25 @@ describe("SetupLBStep tests", () => {
 
 			delete MACHINE_TYPE["old-type"];
 			delete MACHINE_TYPE["new-type"];
+		});
+	});
+
+	describe("create tests", () => {
+		it("should create a new instance and run setup commands", async () => {
+			const checkupInstanceMock = jest.mocked(checkupInstance);
+			checkupInstanceMock.mockResolvedValue(lbInstance);
+			mgcDAO.createInstance.mockResolvedValue(lbInstance);
+			sshFactory.createSSHClient.mockReturnValue(sshClient);
+
+			await setupLBStep["create"](specs);
+
+			expect(mgcDAO.createInstance).toHaveBeenCalledWith(
+				specs.lb.name,
+				specs.lb.image,
+				specs.lb.sshKeyName,
+				specs.lb.machineType,
+			);
+			expect(checkupInstance).toHaveBeenCalledWith(lbInstance.id, mgcDAO);
 		});
 	});
 });
