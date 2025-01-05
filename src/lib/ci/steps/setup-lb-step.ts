@@ -1,6 +1,7 @@
 import { Specs } from "@src/lib/ci";
+import { checkupInstance } from "@src/lib/ci/checkup-instance";
 import { SetupLBCommandBuilder } from "@src/lib/ci/command-builders/setup-lb-command-builder";
-import { Instance, MACHINE_TYPE, MGCDAO, checkupInstance } from "@src/lib/ci/mgc";
+import { Instance, MACHINE_TYPE, MGCDAO } from "@src/lib/ci/mgc";
 import { SSHFactory } from "@src/lib/ci/ssh";
 import { ValidationError } from "@src/lib/utils/errors";
 import { infiniteLoop } from "@src/lib/utils/infinite-loop";

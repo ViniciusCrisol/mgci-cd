@@ -1,15 +1,17 @@
 import { Specs } from "@src/lib/ci";
-import { checkupInstance, Instance, InstanceStatus, MACHINE_TYPE, MGCDAO } from "@src/lib/ci/mgc";
+import { checkupInstance } from "@src/lib/ci/checkup-instance";
+import { Instance, InstanceStatus, MACHINE_TYPE, MGCDAO } from "@src/lib/ci/mgc";
 import { SSHClient, SSHFactory } from "@src/lib/ci/ssh";
 import { SetupLBStep } from "@src/lib/ci/steps/setup-lb-step";
 import { ValidationError } from "@src/lib/utils/errors";
 
+jest.mock("@src/lib/ci/command-builders/setup-lb-command-builder");
+jest.mock("@src/lib/ci/checkup-instance");
+jest.mock("@src/lib/ci/ssh");
+
 jest.mock("@src/lib/utils/infinite-loop", () => ({
 	infiniteLoop: jest.fn((fn) => fn()),
 }));
-jest.mock("@src/lib/ci/mgc");
-jest.mock("@src/lib/ci/ssh");
-jest.mock("@src/lib/ci/command-builders/setup-lb-command-builder");
 
 describe("SetupLBStep tests", () => {
 	let specs: Specs;
