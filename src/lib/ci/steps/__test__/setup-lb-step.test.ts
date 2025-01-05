@@ -1,7 +1,8 @@
 import { Specs } from "@src/lib/ci";
-import { Instance, InstanceStatus, MGCDAO } from "@src/lib/ci/mgc";
+import { checkupInstance, Instance, InstanceStatus, MACHINE_TYPE, MGCDAO } from "@src/lib/ci/mgc";
 import { SSHFactory } from "@src/lib/ci/ssh";
 import { SetupLBStep } from "@src/lib/ci/steps/setup-lb-step";
+import { ValidationError } from "@src/lib/utils/errors";
 
 jest.mock("@src/lib/ci/mgc");
 jest.mock("@src/lib/ci/ssh");
@@ -34,7 +35,7 @@ describe("SetupLBStep tests", () => {
 			},
 		};
 		lbInstance = {
-			id: "id",
+			id: "1",
 			name: specs.lb.name,
 			status: InstanceStatus.COMPLETED,
 			machineType: specs.lb.machineType,
@@ -80,6 +81,35 @@ describe("SetupLBStep tests", () => {
 
 			expect(mgcDAO.getInstanceByName).toHaveBeenCalledWith(lbInstance.name);
 			expect(setupLBStep["create"]).toHaveBeenCalledWith(specs);
+		});
+	});
+
+	describe("update tests", () => {
+		it("should throw ValidationError if trying to downgrade machine type", async () => {
+			specs.lb.machineType = "lower-type";
+			lbInstance.machineType = "higher-type";
+			MACHINE_TYPE["lower-type"] = { name: "lower-type", weight: 1 };
+			MACHINE_TYPE["higher-type"] = { name: "higher-type", weight: 2 };
+
+			await expect(setupLBStep["update"](specs, lbInstance)).rejects.toThrow(ValidationError);
+
+			delete MACHINE_TYPE["higher-type"];
+			delete MACHINE_TYPE["lower-type"];
+		});
+
+		it("should retype the instance and run checkupInstance if machine type is different", async () => {
+			specs.lb.machineType = "new-type";
+			lbInstance.machineType = "old-type";
+			MACHINE_TYPE["old-type"] = { name: "old-type", weight: 1 };
+			MACHINE_TYPE["new-type"] = { name: "new-type", weight: 2 };
+
+			await setupLBStep["update"](specs, lbInstance);
+
+			expect(checkupInstance).toHaveBeenCalledWith(lbInstance.id, mgcDAO);
+			expect(mgcDAO.retypeInstance).toHaveBeenCalledWith(lbInstance.id, specs.lb.machineType);
+
+			delete MACHINE_TYPE["old-type"];
+			delete MACHINE_TYPE["new-type"];
 		});
 	});
 });
