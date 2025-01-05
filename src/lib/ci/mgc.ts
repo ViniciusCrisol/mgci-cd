@@ -1,21 +1,29 @@
-export const MACHINE_TYPE_WEIGHT: { [key: string]: number } = {
-	BV1_2_10: 1,
-	BV1_2_40: 2,
-	BV1_2_100: 3,
-	BV1_2_150: 4,
-	BV2_4_20: 5,
-	BV2_4_40: 6,
-	BV2_4_100: 7,
-	BV2_4_150: 8,
-	BV2_8_10: 9,
-	BV2_8_100: 10,
-	BV4_8_20: 11,
-	BV4_16_10: 12,
-	BV4_16_20: 13,
-	BV8_16_10: 14,
-	BV8_16_40: 15,
-	BV8_32_20: 16,
-	BV8_32_40: 17,
+import { ExecutionError } from "@src/lib/utils/errors";
+import { infiniteLoop } from "@src/lib/utils/infinite-loop";
+
+export const MACHINE_TYPE: {
+	[key: string]: {
+		name: string;
+		weight: number;
+	};
+} = {
+	BV1_2_10: { name: "BV1-2-10", weight: 1 },
+	BV1_2_40: { name: "BV1-2-40", weight: 2 },
+	BV1_2_100: { name: "BV1-2-100", weight: 3 },
+	BV1_2_150: { name: "BV1-2-150", weight: 4 },
+	BV2_4_20: { name: "BV2-4-20", weight: 5 },
+	BV2_4_40: { name: "BV2-4-40", weight: 6 },
+	BV2_4_100: { name: "BV2-4-100", weight: 7 },
+	BV2_4_150: { name: "BV2-4-150", weight: 8 },
+	BV2_8_10: { name: "BV2-8-10", weight: 9 },
+	BV2_8_100: { name: "BV2-8-100", weight: 10 },
+	BV4_8_20: { name: "BV4-8-20", weight: 11 },
+	BV4_16_10: { name: "BV4-16-10", weight: 12 },
+	BV4_16_20: { name: "BV4-16-20", weight: 13 },
+	BV8_16_10: { name: "BV8-16-10", weight: 14 },
+	BV8_16_40: { name: "BV8-16-40", weight: 15 },
+	BV8_32_20: { name: "BV8-32-20", weight: 16 },
+	BV8_32_40: { name: "BV8-32-40", weight: 17 },
 };
 
 export type Instance = {
@@ -49,4 +57,39 @@ export interface MGCDAO {
 	getInstanceByID(id: string): Promise<Instance | undefined>;
 	getInstanceByName(name: string): Promise<Instance | undefined>;
 	retypeInstance(id: string, machineType: string): Promise<void>;
+}
+
+/**
+ * Checks the status of an instance by its ID and returns
+ * the instance if it is completed. If the instance is in
+ * an error state, it throws an ExecutionError.
+ */
+export async function checkupInstance(id: string, mgcDAO: MGCDAO): Promise<Instance> {
+	return await infiniteLoop(async () => {
+		const instance = await mgcDAO.getInstanceByID(id);
+		if (instance) {
+			if (instance.status === InstanceStatus.COMPLETED) {
+				return instance;
+			}
+			if (
+				instance.status === InstanceStatus.CREATING_ERROR ||
+				instance.status === InstanceStatus.CREATING_NETWORK_ERROR ||
+				instance.status === InstanceStatus.CREATING_ERROR_QUOTA ||
+				instance.status === InstanceStatus.CREATING_ERROR_QUOTA_RAM ||
+				instance.status === InstanceStatus.CREATING_ERROR_QUOTA_VCPU ||
+				instance.status === InstanceStatus.CREATING_ERROR_QUOTA_DISK ||
+				instance.status === InstanceStatus.CREATING_ERROR_QUOTA_INSTANCE ||
+				instance.status === InstanceStatus.CREATING_ERROR_QUOTA_FLOATING_IP
+			) {
+				throw new ExecutionError(`Instance creation failed with status: ${instance.status}`);
+			}
+			if (
+				instance.status === InstanceStatus.RETYPING_ERROR ||
+				instance.status === InstanceStatus.RETYPING_ERROR_QUOTA
+			) {
+				throw new ExecutionError(`Instance retyping failed with status: ${instance.status}`);
+			}
+		}
+		throw new ExecutionError("Instance not ready yet");
+	});
 }
