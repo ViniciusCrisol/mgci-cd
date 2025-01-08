@@ -1,4 +1,4 @@
-import { ExecutionError } from "@src/lib/utils/errors";
+import { ExecutionError } from "@src/lib/errors";
 
 export async function infiniteLoop<T>(
 	fn: () => Promise<T>,

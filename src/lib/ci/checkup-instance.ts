@@ -1,6 +1,6 @@
 import { Instance, InstanceStatus, MGCDAO } from "@src/lib/ci/mgc";
-import { ExecutionError } from "@src/lib/utils/errors";
-import { infiniteLoop } from "@src/lib/utils/infinite-loop";
+import { ExecutionError } from "@src/lib/errors";
+import { infiniteLoop } from "@src/lib/helpers/infinite-loop";
 
 /**
  * Checks the status of an instance by its ID and returns

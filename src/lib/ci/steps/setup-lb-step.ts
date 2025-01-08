@@ -3,8 +3,8 @@ import { checkupInstance } from "@src/lib/ci/checkup-instance";
 import { SetupLBCommandBuilder } from "@src/lib/ci/command-builders/setup-lb-command-builder";
 import { Instance, MACHINE_TYPE, MGCDAO } from "@src/lib/ci/mgc";
 import { SSHFactory } from "@src/lib/ci/ssh";
-import { ValidationError } from "@src/lib/utils/errors";
-import { infiniteLoop } from "@src/lib/utils/infinite-loop";
+import { ValidationError } from "@src/lib/errors";
+import { infiniteLoop } from "@src/lib/helpers/infinite-loop";
 
 export class SetupLBStep {
 	constructor(private readonly mgcDAO: MGCDAO, private readonly sshFactory: SSHFactory) {}

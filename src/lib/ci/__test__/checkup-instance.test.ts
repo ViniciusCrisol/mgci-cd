@@ -1,8 +1,8 @@
 import { checkupInstance } from "@src/lib/ci/checkup-instance";
 import { InstanceStatus, MGCDAO } from "@src/lib/ci/mgc";
-import { ExecutionError } from "@src/lib/utils/errors";
+import { ExecutionError } from "@src/lib/errors";
 
-jest.mock("@src/lib/utils/infinite-loop", () => ({
+jest.mock("@src/lib/helpers/infinite-loop", () => ({
 	infiniteLoop: jest.fn((fn) => fn()),
 }));
 
