@@ -2,10 +2,6 @@ import { checkupInstance } from "@src/lib/ci/checkup-instance";
 import { InstanceStatus, MGCDAO } from "@src/lib/ci/mgc";
 import { ExecutionError } from "@src/lib/errors";
 
-jest.mock("@src/lib/helpers/infinite-loop", () => ({
-	infiniteLoop: jest.fn((fn) => fn()),
-}));
-
 describe("checkupInstance tests", () => {
 	let mgcDAO: jest.Mocked<MGCDAO>;
 
@@ -66,7 +62,7 @@ describe("checkupInstance tests", () => {
 			mgcDAO.getInstanceByID.mockResolvedValueOnce(instance);
 
 			await expect(checkupInstance(id, mgcDAO)).rejects.toThrow(
-				new ExecutionError(`Instance creation failed with status: ${instance.status}`),
+				new ExecutionError(`Failed after 0 attempts: Instance creation failed with status: ${instance.status}`),
 			);
 		}
 	});
@@ -89,13 +85,15 @@ describe("checkupInstance tests", () => {
 			mgcDAO.getInstanceByID.mockResolvedValueOnce(instance);
 
 			await expect(checkupInstance(id, mgcDAO)).rejects.toThrow(
-				new ExecutionError(`Instance retyping failed with status: ${instance.status}`),
+				new ExecutionError(`Failed after 0 attempts: Instance retyping failed with status: ${instance.status}`),
 			);
 		}
 	});
 
 	it("should throw an error if instance is not ready yet", async () => {
 		mgcDAO.getInstanceByID.mockResolvedValueOnce(undefined);
-		await expect(checkupInstance("1", mgcDAO)).rejects.toThrow(new ExecutionError("Instance not ready yet"));
+		await expect(checkupInstance("1", mgcDAO)).rejects.toThrow(
+			new ExecutionError("Failed after 0 attempts: Instance not ready yet"),
+		);
 	});
 });

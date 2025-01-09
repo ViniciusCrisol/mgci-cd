@@ -4,10 +4,6 @@ import { SSHClient, SSHFactory } from "@src/lib/ci/ssh";
 import { SetupLBStep } from "@src/lib/ci/steps/setup-lb-step";
 import { ValidationError } from "@src/lib/errors";
 
-jest.mock("@src/lib/helpers/infinite-loop", () => ({
-	infiniteLoop: jest.fn((fn) => fn()),
-}));
-
 describe("SetupLBStep tests", () => {
 	let specs: Specs;
 	let lbInstance: Instance;

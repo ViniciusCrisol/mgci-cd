@@ -1,9 +1,10 @@
+import config from "@src/config";
 import { ExecutionError } from "@src/lib/errors";
 
 export async function infiniteLoop<T>(
 	fn: () => Promise<T>,
-	interval: number = 300,
-	maxRetries: number = 200,
+	interval: number = config.infiniteLoop.interval,
+	maxRetries: number = config.infiniteLoop.maxRetries,
 ): Promise<T> {
 	const attempt = async function (retries: number): Promise<T> {
 		try {
