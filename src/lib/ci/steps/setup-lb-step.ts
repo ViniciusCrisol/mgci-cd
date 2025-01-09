@@ -53,7 +53,7 @@ export class SetupLBStep {
 		// it reflects the latest state and values before proceeding with setup.
 		lbInstance = await checkupInstance(lbInstance.id, this.mgcDAO);
 		const command = new SetupLBCommandBuilder(specs.lb.config).build();
-		const sshClient = this.sshFactory.createSSHClient(lbInstance.network.privateIP, lbInstance.network.user);
+		const sshClient = this.sshFactory.createSSHClient(lbInstance.network.publicIP, lbInstance.network.user);
 		await infiniteLoop(async () => {
 			await sshClient.run(command);
 		});

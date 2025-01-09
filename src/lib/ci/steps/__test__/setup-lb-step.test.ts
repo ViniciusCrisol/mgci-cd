@@ -1,13 +1,8 @@
 import { Specs } from "@src/lib/ci";
-import { checkupInstance } from "@src/lib/ci/checkup-instance";
 import { Instance, InstanceStatus, MACHINE_TYPE, MGCDAO } from "@src/lib/ci/mgc";
 import { SSHClient, SSHFactory } from "@src/lib/ci/ssh";
 import { SetupLBStep } from "@src/lib/ci/steps/setup-lb-step";
 import { ValidationError } from "@src/lib/errors";
-
-jest.mock("@src/lib/ci/command-builders/setup-lb-command-builder");
-jest.mock("@src/lib/ci/checkup-instance");
-jest.mock("@src/lib/ci/ssh");
 
 jest.mock("@src/lib/helpers/infinite-loop", () => ({
 	infiniteLoop: jest.fn((fn) => fn()),
@@ -72,86 +67,101 @@ describe("SetupLBStep tests", () => {
 
 	describe("execute tests", () => {
 		it("should update the instance if it exists", async () => {
-			mgcDAO.getInstanceByName.mockResolvedValue(lbInstance);
-			jest.spyOn(setupLBStep, "update" as keyof SetupLBStep).mockResolvedValue(undefined);
+			mgcDAO.getInstanceByName.mockResolvedValueOnce(lbInstance);
+			jest.spyOn(setupLBStep, "update" as keyof SetupLBStep).mockResolvedValueOnce(undefined);
 
 			await setupLBStep.execute(specs);
 
-			expect(mgcDAO.getInstanceByName).toHaveBeenCalledWith(lbInstance.name);
 			expect(setupLBStep["update"]).toHaveBeenCalledWith(specs, lbInstance);
+			expect(mgcDAO.getInstanceByName).toHaveBeenCalledWith(lbInstance.name);
 		});
 
 		it("should create the instance if it does not exist", async () => {
-			mgcDAO.getInstanceByName.mockResolvedValue(undefined);
-			jest.spyOn(setupLBStep, "create" as keyof SetupLBStep).mockResolvedValue(undefined);
+			mgcDAO.getInstanceByName.mockResolvedValueOnce(undefined);
+			jest.spyOn(setupLBStep, "create" as keyof SetupLBStep).mockResolvedValueOnce(undefined);
 
 			await setupLBStep.execute(specs);
 
-			expect(mgcDAO.getInstanceByName).toHaveBeenCalledWith(lbInstance.name);
 			expect(setupLBStep["create"]).toHaveBeenCalledWith(specs);
+			expect(mgcDAO.getInstanceByName).toHaveBeenCalledWith(lbInstance.name);
 		});
 	});
 
 	describe("update tests", () => {
 		it("should throw ValidationError if trying to downgrade machine type", async () => {
+			mgcDAO.getInstanceByName.mockResolvedValueOnce(lbInstance);
+
 			specs.lb.machineType = "lower-type";
 			lbInstance.machineType = "higher-type";
 			MACHINE_TYPE["lower-type"] = { name: "lower-type", weight: 1 };
 			MACHINE_TYPE["higher-type"] = { name: "higher-type", weight: 2 };
 
-			await expect(setupLBStep["update"](specs, lbInstance)).rejects.toThrow(ValidationError);
+			await expect(setupLBStep.execute(specs)).rejects.toThrow(
+				new ValidationError(
+					`Cannot downgrade machine type from ${lbInstance.machineType} to ${specs.lb.machineType}`,
+				),
+			);
+			expect(mgcDAO.getInstanceByName).toHaveBeenCalledWith(lbInstance.name);
 
 			delete MACHINE_TYPE["higher-type"];
 			delete MACHINE_TYPE["lower-type"];
 		});
 
 		it("should retype the instance and run checkupInstance if machine type is different", async () => {
+			mgcDAO.getInstanceByID.mockResolvedValueOnce(lbInstance);
+			mgcDAO.getInstanceByName.mockResolvedValueOnce(lbInstance);
+
 			specs.lb.machineType = "new-type";
 			lbInstance.machineType = "old-type";
 			MACHINE_TYPE["old-type"] = { name: "old-type", weight: 1 };
 			MACHINE_TYPE["new-type"] = { name: "new-type", weight: 2 };
 
-			await setupLBStep["update"](specs, lbInstance);
+			await setupLBStep.execute(specs);
 
-			expect(checkupInstance).toHaveBeenCalledWith(lbInstance.id, mgcDAO);
 			expect(mgcDAO.retypeInstance).toHaveBeenCalledWith(lbInstance.id, specs.lb.machineType);
+			expect(mgcDAO.getInstanceByID).toHaveBeenCalledWith(lbInstance.id);
+			expect(mgcDAO.getInstanceByName).toHaveBeenCalledWith(lbInstance.name);
 
 			delete MACHINE_TYPE["old-type"];
 			delete MACHINE_TYPE["new-type"];
 		});
 
 		it("should not retype the instance if machine type is the same", async () => {
+			mgcDAO.getInstanceByName.mockResolvedValueOnce(lbInstance);
+
 			specs.lb.machineType = "same-type";
 			lbInstance.machineType = "same-type";
 			MACHINE_TYPE["same-type"] = { name: "same-type", weight: 1 };
 
-			await setupLBStep["update"](specs, lbInstance);
+			await setupLBStep.execute(specs);
 
-			expect(checkupInstance).not.toHaveBeenCalled();
 			expect(mgcDAO.retypeInstance).not.toHaveBeenCalled();
+			expect(mgcDAO.getInstanceByName).toHaveBeenCalledWith(lbInstance.name);
 
 			delete MACHINE_TYPE["same-type"];
 		});
 
 		it("should handle undefined weights in MACHINE_TYPE", async () => {
+			mgcDAO.getInstanceByName.mockResolvedValueOnce(lbInstance);
+
 			specs.lb.machineType = "undefined-weight-type";
 			lbInstance.machineType = "another-undefined-weight-type";
 
-			await setupLBStep["update"](specs, lbInstance);
+			await setupLBStep.execute(specs);
 
-			expect(checkupInstance).not.toHaveBeenCalled();
 			expect(mgcDAO.retypeInstance).not.toHaveBeenCalled();
+			expect(mgcDAO.getInstanceByName).toHaveBeenCalledWith(lbInstance.name);
 		});
 	});
 
 	describe("create tests", () => {
 		it("should create a new instance and run setup commands", async () => {
-			const checkupInstanceMock = jest.mocked(checkupInstance);
-			checkupInstanceMock.mockResolvedValue(lbInstance);
-			mgcDAO.createInstance.mockResolvedValue(lbInstance);
-			sshFactory.createSSHClient.mockReturnValue(sshClient);
+			mgcDAO.createInstance.mockResolvedValueOnce(lbInstance);
+			mgcDAO.getInstanceByID.mockResolvedValueOnce(lbInstance);
+			mgcDAO.getInstanceByName.mockResolvedValueOnce(undefined);
+			sshFactory.createSSHClient.mockReturnValueOnce(sshClient);
 
-			await setupLBStep["create"](specs);
+			await setupLBStep.execute(specs);
 
 			expect(mgcDAO.createInstance).toHaveBeenCalledWith(
 				specs.lb.name,
@@ -159,7 +169,12 @@ describe("SetupLBStep tests", () => {
 				specs.lb.sshKeyName,
 				specs.lb.machineType,
 			);
-			expect(checkupInstance).toHaveBeenCalledWith(lbInstance.id, mgcDAO);
+			expect(mgcDAO.getInstanceByID).toHaveBeenCalledWith(lbInstance.id);
+			expect(mgcDAO.getInstanceByName).toHaveBeenCalledWith(lbInstance.name);
+			expect(sshFactory.createSSHClient).toHaveBeenCalledWith(
+				lbInstance.network.publicIP,
+				lbInstance.network.user,
+			);
 		});
 	});
 });

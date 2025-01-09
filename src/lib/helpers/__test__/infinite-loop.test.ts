@@ -3,7 +3,7 @@ import { infiniteLoop } from "@src/lib/helpers/infinite-loop";
 
 describe("infiniteLoop tests", () => {
 	it("should resolve the promise if the function succeeds", async () => {
-		const mockFn = jest.fn().mockResolvedValue("success");
+		const mockFn = jest.fn().mockResolvedValueOnce("success");
 		const result = await infiniteLoop(mockFn);
 		expect(mockFn).toHaveBeenCalledTimes(1);
 		expect(result).toBe("success");

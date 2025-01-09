@@ -31,7 +31,7 @@ describe("checkupInstance tests", () => {
 				privateIP: "192.168.1.1",
 			},
 		};
-		mgcDAO.getInstanceByID.mockResolvedValue(instance);
+		mgcDAO.getInstanceByID.mockResolvedValueOnce(instance);
 
 		const result = await checkupInstance(id, mgcDAO);
 
@@ -63,7 +63,7 @@ describe("checkupInstance tests", () => {
 					privateIP: "192.168.1.1",
 				},
 			};
-			mgcDAO.getInstanceByID.mockResolvedValue(instance);
+			mgcDAO.getInstanceByID.mockResolvedValueOnce(instance);
 
 			await expect(checkupInstance(id, mgcDAO)).rejects.toThrow(
 				new ExecutionError(`Instance creation failed with status: ${instance.status}`),
@@ -86,7 +86,7 @@ describe("checkupInstance tests", () => {
 					privateIP: "192.168.1.1",
 				},
 			};
-			mgcDAO.getInstanceByID.mockResolvedValue(instance);
+			mgcDAO.getInstanceByID.mockResolvedValueOnce(instance);
 
 			await expect(checkupInstance(id, mgcDAO)).rejects.toThrow(
 				new ExecutionError(`Instance retyping failed with status: ${instance.status}`),
@@ -95,7 +95,7 @@ describe("checkupInstance tests", () => {
 	});
 
 	it("should throw an error if instance is not ready yet", async () => {
-		mgcDAO.getInstanceByID.mockResolvedValue(undefined);
+		mgcDAO.getInstanceByID.mockResolvedValueOnce(undefined);
 		await expect(checkupInstance("1", mgcDAO)).rejects.toThrow(new ExecutionError("Instance not ready yet"));
 	});
 });
