@@ -6,6 +6,6 @@ export async function main() {
 	console.log(message);
 }
 
-if (process.argv.includes("main")) {
+if (process.argv.includes("execute")) {
 	main();
 }
