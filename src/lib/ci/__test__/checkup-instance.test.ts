@@ -1,6 +1,6 @@
 import config from "@src/config";
-import { checkupInstance } from "@src/lib/ci/core/checkup-instance";
-import { InstanceStatus, MGCDAO } from "@src/lib/ci/core/mgc";
+import { checkupInstance } from "@src/lib/ci/checkup-instance";
+import { InstanceStatus, MGCDAO } from "@src/lib/ci/mgc";
 import { ExecutionError } from "@src/lib/errors";
 
 describe("checkupInstance tests", () => {

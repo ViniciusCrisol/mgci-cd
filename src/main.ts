@@ -1,4 +1,4 @@
-import { CI } from "@src/lib/ci/core";
+import { CI } from "@src/lib/ci";
 
 export async function main() {
 	const ci = new CI("Hello World!");

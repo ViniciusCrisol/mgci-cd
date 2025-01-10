@@ -1,4 +1,4 @@
-import { Instance, InstanceStatus, MGCDAO } from "@src/lib/ci/core/mgc";
+import { Instance, InstanceStatus, MGCDAO } from "@src/lib/ci/mgc";
 import { ExecutionError } from "@src/lib/errors";
 import { infiniteLoop } from "@src/lib/helpers/infinite-loop";
 

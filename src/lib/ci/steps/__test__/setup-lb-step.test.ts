@@ -1,7 +1,7 @@
-import { Specs } from "@src/lib/ci/core";
-import { Instance, InstanceStatus, MACHINE_TYPE, MGCDAO } from "@src/lib/ci/core/mgc";
-import { SSHClient, SSHFactory } from "@src/lib/ci/core/ssh";
-import { SetupLBStep } from "@src/lib/ci/core/steps/setup-lb-step";
+import { Specs } from "@src/lib/ci";
+import { Instance, InstanceStatus, MACHINE_TYPE, MGCDAO } from "@src/lib/ci/mgc";
+import { SSHClient, SSHFactory } from "@src/lib/ci/ssh";
+import { SetupLBStep } from "@src/lib/ci/steps/setup-lb-step";
 import { ValidationError } from "@src/lib/errors";
 
 describe("SetupLBStep tests", () => {
