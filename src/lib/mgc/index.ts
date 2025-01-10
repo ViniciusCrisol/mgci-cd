@@ -1,9 +1,21 @@
 import { CommandRunner } from "@src/lib/helpers/command-runner";
 import { join } from "path";
 
-const cliPath = join(__dirname, "embedded-cli", "linux_amd64@v0.31.0");
+export type Instance = {
+	id: string;
+	name: string;
+	status: string;
+	machineType: string;
+	network?: {
+		user: string;
+		publicIP: string;
+		privateIP: string;
+	};
+};
 
-type MGC = {};
+export type MGC = {};
+
+const cliPath = join(__dirname, "embedded-cli", "linux_amd64@v0.31.0");
 
 export default function init(key: string): MGC {
 	const runner = new CommandRunner(
