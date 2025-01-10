@@ -1,4 +1,4 @@
-import { SetupLBCommandBuilder } from "@src/lib/ci/command-builders/setup-lb-command-builder";
+import { SetupLBCommandBuilder } from "@src/lib/ci/core/command-builders/setup-lb-command-builder";
 
 const expectedCommand = `bash -c -e '
 sudo DEBIAN_FRONTEND=noninteractive apt-get update -y 2> /dev/null
