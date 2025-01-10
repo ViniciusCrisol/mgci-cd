@@ -18,7 +18,7 @@ export type LBConfig = {
 };
 
 export class CI {
-	constructor(private message: string) {}
+	constructor(private readonly message: string) {}
 
 	public async execute(): Promise<string> {
 		return this.message;

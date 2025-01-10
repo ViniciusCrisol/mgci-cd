@@ -3,7 +3,9 @@ import { join } from "path";
 
 const cliPath = join(__dirname, "embedded-cli", "linux_amd64@v0.31.0");
 
-export default function init(key: string) {
+type MGC = {};
+
+export default function init(key: string): MGC {
 	const runner = new CommandRunner(
 		cliPath,
 		["--raw", "--no-confirm", `--api-key=${key}`, "--output=json=compact"],
