@@ -26,6 +26,11 @@ class TestClass {
 	async methodThatThrows409() {
 		throw new Error("409 Conflict");
 	}
+
+	@handleErrors("TestClass")
+	async methodThatThrowsString() {
+		throw "A string error";
+	}
 }
 
 describe("handleMGCCommandError tests", () => {
@@ -57,5 +62,10 @@ describe("handleMGCCommandError tests", () => {
 	it("should throw ExecutionError for other errors", async () => {
 		await expect(testInstance.methodThatThrowsOtherError()).rejects.toThrow(ExecutionError);
 		await expect(testInstance.methodThatThrowsOtherError()).rejects.toThrow("TestClass: Some other error");
+	});
+
+	it("should throw ExecutionError for string errors", async () => {
+		await expect(testInstance.methodThatThrowsString()).rejects.toThrow(ExecutionError);
+		await expect(testInstance.methodThatThrowsString()).rejects.toThrow("TestClass: A string error");
 	});
 });
