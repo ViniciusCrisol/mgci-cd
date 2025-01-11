@@ -2,23 +2,46 @@ import { CommandRunner } from "@src/lib/helpers/command-runner";
 import { Instance } from "@src/lib/mgc";
 import handleMGCCommandError from "@src/lib/mgc/handle-mgc-command-error";
 
-interface MGCInstance {
+interface QueryInstanceResult {
 	id: string;
 	name: string;
+	state: string;
 	status: string;
-	machine_type: {
+	ssh_key_name: string;
+	availability_zone: string;
+	image: {
 		id: string;
 		name: string;
+		platform: string;
 	};
 	network: {
+		vpc: {
+			id: string;
+			name: string;
+		};
 		ports: {
+			id: string;
+			name: string;
 			ipAddresses: {
-				user: string;
+				ipV6Address: string;
 				publicIpAddress: string;
 				privateIpAddress: string;
 			};
 		}[];
 	};
+	machine_type: {
+		id: string;
+		name: string;
+		ram: number;
+		disk: number;
+		vcpus: number;
+	};
+	created_at: string;
+	updated_at: string;
+}
+
+interface CreateInstanceResult {
+	id: string;
 }
 
 export class VMCommands {
@@ -33,14 +56,13 @@ export class VMCommands {
 			`--id=${id}`,
 			"--expand=image,machine-type,network",
 		]);
-		const instance: MGCInstance = JSON.parse(result);
+		const instance: QueryInstanceResult = JSON.parse(result);
 		return {
 			id: instance.id,
 			name: instance.name,
 			status: instance.status,
 			machineType: instance.machine_type.name,
 			network: instance.network.ports[0] && {
-				user: instance.network.ports[0].ipAddresses.user,
 				publicIP: instance.network.ports[0].ipAddresses.publicIpAddress,
 				privateIP: instance.network.ports[0].ipAddresses.privateIpAddress,
 			},
@@ -57,28 +79,20 @@ export class VMCommands {
 			"--expand=image,machine-type,network",
 		]);
 		const instances = JSON.parse(result);
-		return instances.map(
-			(instance: MGCInstance): Instance => ({
-				id: instance.id,
-				name: instance.name,
-				status: instance.status,
-				machineType: instance.machine_type.name,
-				network: instance.network.ports[0] && {
-					user: instance.network.ports[0].ipAddresses.user,
-					publicIP: instance.network.ports[0].ipAddresses.publicIpAddress,
-					privateIP: instance.network.ports[0].ipAddresses.privateIpAddress,
-				},
-			}),
-		);
+		return instances.map((instance: QueryInstanceResult) => ({
+			id: instance.id,
+			name: instance.name,
+			status: instance.status,
+			machineType: instance.machine_type.name,
+			network: instance.network.ports[0] && {
+				publicIP: instance.network.ports[0].ipAddresses.publicIpAddress,
+				privateIP: instance.network.ports[0].ipAddresses.privateIpAddress,
+			},
+		}));
 	}
 
 	@handleMGCCommandError("Failed to create instance")
-	public async createInstance(
-		name: string,
-		image: string,
-		sshKeyName: string,
-		machineType: string,
-	): Promise<Instance> {
+	public async createInstance(name: string, image: string, sshKeyName: string, machineType: string): Promise<string> {
 		const result = await this.commandRunner.run([
 			"virtual-machines",
 			"instances",
@@ -88,12 +102,7 @@ export class VMCommands {
 			`--ssh-key-name=${sshKeyName}`,
 			`--machine-type.name=${machineType}`,
 		]);
-		const instance: MGCInstance = JSON.parse(result);
-		return {
-			id: instance.id,
-			name: instance.name,
-			status: instance.status,
-			machineType: instance.machine_type.name,
-		};
+		const instance: CreateInstanceResult = JSON.parse(result);
+		return instance.id;
 	}
 }

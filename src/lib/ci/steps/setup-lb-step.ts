@@ -43,15 +43,13 @@ export class SetupLBStep {
 	}
 
 	private async create(specs: Specs): Promise<void> {
-		let lbInstance = await this.mgcDAO.createInstance(
+		const instanceID = await this.mgcDAO.createInstance(
 			specs.lb.name,
 			specs.lb.image,
 			specs.lb.sshKeyName,
 			specs.lb.machineType,
 		);
-		// Override lbInstance with the result from checkupInstance to ensure
-		// it reflects the latest state and values before proceeding with setup.
-		lbInstance = await checkupInstance(lbInstance.id, this.mgcDAO);
+		const lbInstance = await checkupInstance(instanceID, this.mgcDAO);
 		const command = new SetupLBCommandBuilder(specs.lb.config).build();
 		const sshClient = this.sshFactory.createSSHClient(lbInstance.network.publicIP, lbInstance.network.user);
 		await infiniteLoop(async () => {

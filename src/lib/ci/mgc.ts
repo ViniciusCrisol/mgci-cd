@@ -25,7 +25,7 @@ export enum InstanceStatus {
 }
 
 export interface MGCDAO {
-	createInstance(name: string, image: string, sshKeyName: string, machineType: string): Promise<Instance>;
+	createInstance(name: string, image: string, sshKeyName: string, machineType: string): Promise<string>;
 	getInstanceByID(id: string): Promise<Instance | undefined>;
 	getInstanceByName(name: string): Promise<Instance | undefined>;
 	retypeInstance(id: string, machineType: string): Promise<void>;

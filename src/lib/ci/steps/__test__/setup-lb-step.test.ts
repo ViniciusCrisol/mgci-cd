@@ -152,7 +152,7 @@ describe("SetupLBStep tests", () => {
 
 	describe("create tests", () => {
 		it("should create a new instance and run setup commands", async () => {
-			mgcDAO.createInstance.mockResolvedValueOnce(lbInstance);
+			mgcDAO.createInstance.mockResolvedValueOnce(lbInstance.id);
 			mgcDAO.getInstanceByID.mockResolvedValueOnce(lbInstance);
 			mgcDAO.getInstanceByName.mockResolvedValueOnce(undefined);
 			sshFactory.createSSHClient.mockReturnValueOnce(sshClient);

@@ -1,4 +1,5 @@
 import { CommandRunner } from "@src/lib/helpers/command-runner";
+import { VMCommands } from "@src/lib/mgc/commands/vm-commands";
 import { join } from "path";
 
 export type Instance = {
@@ -7,18 +8,15 @@ export type Instance = {
 	status: string;
 	machineType: string;
 	network?: {
-		user: string;
 		publicIP: string;
 		privateIP: string;
 	};
 };
 
-export type MGC = {};
+const cliPath = join(__dirname, "embedded-cli", "linux_amd64@v0_31_0.elf");
 
-const cliPath = join(__dirname, "embedded-cli", "linux_amd64@v0.31.0");
-
-export default function init(key: string): MGC {
-	const runner = new CommandRunner(
+export function init(key: string) {
+	const commandRunner = new CommandRunner(
 		cliPath,
 		["--raw", "--no-confirm", `--api-key=${key}`, "--output=json=compact"],
 		(stdout) =>
@@ -28,5 +26,7 @@ export default function init(key: string): MGC {
 				.replace(/\(\ds\)/g, "") // Remove time indicators
 				.trim(),
 	);
-	return {};
+	return {
+		vm: new VMCommands(commandRunner),
+	};
 }
