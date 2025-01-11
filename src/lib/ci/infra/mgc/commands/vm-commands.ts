@@ -1,7 +1,7 @@
+import mgcErrorHandler from "@src/lib/ci/infra/mgc/mgc-error-handler";
 import { CommandRunner } from "@src/lib/helpers/command-runner";
-import handleMGCCommandError from "@src/lib/mgc/handle-mgc-command-error";
 
-interface QueryInstanceResult {
+export type QueryInstanceResult = {
 	id: string;
 	name: string;
 	state: string;
@@ -37,16 +37,16 @@ interface QueryInstanceResult {
 	};
 	created_at: string;
 	updated_at: string;
-}
+};
 
-interface CreateInstanceResult {
+export type CreateInstanceResult = {
 	id: string;
-}
+};
 
 export class VMCommands {
 	constructor(private readonly commandRunner: CommandRunner) {}
 
-	@handleMGCCommandError("Failed to get instance")
+	@mgcErrorHandler("Failed to get instance")
 	public async getInstance(id: string): Promise<QueryInstanceResult> {
 		const result = await this.commandRunner.run([
 			"virtual-machines",
@@ -58,7 +58,7 @@ export class VMCommands {
 		return JSON.parse(result) as QueryInstanceResult;
 	}
 
-	@handleMGCCommandError("Failed to list instances")
+	@mgcErrorHandler("Failed to list instances")
 	public async listInstances(): Promise<QueryInstanceResult[]> {
 		const result = await this.commandRunner.run([
 			"virtual-machines",
@@ -71,7 +71,7 @@ export class VMCommands {
 		return instances as QueryInstanceResult[];
 	}
 
-	@handleMGCCommandError("Failed to create instance")
+	@mgcErrorHandler("Failed to create instance")
 	public async createInstance(
 		name: string,
 		image: string,

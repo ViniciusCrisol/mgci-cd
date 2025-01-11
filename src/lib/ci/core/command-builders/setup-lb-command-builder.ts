@@ -1,4 +1,4 @@
-import { LBConfig } from "@src/lib/ci";
+import { LBConfig } from "@src/lib/ci/core";
 import { readFileSync } from "fs";
 import { join } from "path";
 

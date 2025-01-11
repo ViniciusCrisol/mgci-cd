@@ -1,5 +1,5 @@
+import { VMCommands } from "@src/lib/ci/infra/mgc/commands/vm-commands";
 import { CommandRunner } from "@src/lib/helpers/command-runner";
-import { VMCommands } from "@src/lib/mgc/commands/vm-commands";
 import { join } from "path";
 
 const cliPath = join(__dirname, "embedded-cli", "linux_amd64@v0_31_0.elf");

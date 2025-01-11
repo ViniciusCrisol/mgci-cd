@@ -1,10 +1,11 @@
 import config from "@src/config";
-import { checkupInstance } from "@src/lib/ci/checkup-instance";
-import { InstanceStatus, MGCDAO } from "@src/lib/ci/mgc";
+import { IMGCDAO } from "@src/lib/ci/core";
+import { checkupInstance } from "@src/lib/ci/core/checkup-instance";
+import { InstanceStatus } from "@src/lib/ci/core/mgc";
 import { ExecutionError } from "@src/lib/errors";
 
 describe("checkupInstance tests", () => {
-	let mgcDAO: jest.Mocked<MGCDAO>;
+	let mgcDAO: jest.Mocked<IMGCDAO>;
 
 	beforeEach(() => {
 		mgcDAO = {

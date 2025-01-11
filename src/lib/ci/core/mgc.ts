@@ -24,13 +24,6 @@ export enum InstanceStatus {
 	RETYPING_ERROR_QUOTA = "retyping_error_quota",
 }
 
-export interface MGCDAO {
-	createInstance(name: string, image: string, sshKeyName: string, machineType: string): Promise<string>;
-	getInstanceByID(id: string): Promise<Instance | undefined>;
-	getInstanceByName(name: string): Promise<Instance | undefined>;
-	retypeInstance(id: string, machineType: string): Promise<void>;
-}
-
 export const MACHINE_TYPE: {
 	[key: string]: {
 		name: string;

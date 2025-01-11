@@ -1,16 +1,15 @@
-import { Specs } from "@src/lib/ci";
-import { Instance, InstanceStatus, MACHINE_TYPE, MGCDAO } from "@src/lib/ci/mgc";
-import { SSHClient, SSHFactory } from "@src/lib/ci/ssh";
-import { SetupLBStep } from "@src/lib/ci/steps/setup-lb-step";
+import { IMGCDAO, ISSHClient, ISSHFactory, Specs } from "@src/lib/ci/core";
+import { Instance, InstanceStatus, MACHINE_TYPE } from "@src/lib/ci/core/mgc";
+import { SetupLBStep } from "@src/lib/ci/core/steps/setup-lb-step";
 import { ValidationError } from "@src/lib/errors";
 
 describe("SetupLBStep tests", () => {
 	let specs: Specs;
 	let lbInstance: Instance;
 
-	let mgcDAO: jest.Mocked<MGCDAO>;
-	let sshClient: jest.Mocked<SSHClient>;
-	let sshFactory: jest.Mocked<SSHFactory>;
+	let mgcDAO: jest.Mocked<IMGCDAO>;
+	let sshClient: jest.Mocked<ISSHClient>;
+	let sshFactory: jest.Mocked<ISSHFactory>;
 	let setupLBStep: SetupLBStep;
 
 	beforeEach(() => {

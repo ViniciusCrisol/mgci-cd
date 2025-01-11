@@ -1,5 +1,5 @@
+import handleErrors from "@src/lib/ci/infra/mgc/mgc-error-handler";
 import { ExecutionError, ForbiddenError, NotFoundError, ValidationError } from "@src/lib/errors";
-import handleErrors from "../handle-mgc-command-error";
 
 class TestClass {
 	@handleErrors("TestClass")

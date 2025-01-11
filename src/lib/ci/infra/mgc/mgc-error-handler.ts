@@ -5,7 +5,7 @@ import { ExecutionError, ForbiddenError, NotFoundError, ValidationError } from "
  * that occur during the execution of the method. The error is passed to
  * the handleError function along with a specified error prefix.
  */
-export default function handleMGCCommandError(errorPrefix: string) {
+export default function mgcErrorHandler(errorPrefix: string) {
 	return (_target: any, _propertyKey: string, propertyDescriptor: PropertyDescriptor) => {
 		// The value is overwritten to replace the original method
 		// with a new function that includes error handling logic.
