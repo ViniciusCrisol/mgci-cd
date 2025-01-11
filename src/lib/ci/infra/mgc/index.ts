@@ -4,7 +4,11 @@ import { join } from "path";
 
 const cliPath = join(__dirname, "embedded-cli", "linux_amd64@v0_31_0.elf");
 
-export function init(key: string) {
+export type MGC = {
+	vm: VMCommands;
+};
+
+export function init(key: string): MGC {
 	const commandRunner = new CommandRunner(
 		cliPath,
 		["--raw", "--no-confirm", `--api-key=${key}`, "--output=json=compact"],
