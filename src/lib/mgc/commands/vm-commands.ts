@@ -1,5 +1,4 @@
 import { CommandRunner } from "@src/lib/helpers/command-runner";
-import { Instance } from "@src/lib/mgc";
 import handleMGCCommandError from "@src/lib/mgc/handle-mgc-command-error";
 
 interface QueryInstanceResult {
@@ -48,7 +47,7 @@ export class VMCommands {
 	constructor(private readonly commandRunner: CommandRunner) {}
 
 	@handleMGCCommandError("Failed to get instance")
-	public async getInstance(id: string): Promise<Instance> {
+	public async getInstance(id: string): Promise<QueryInstanceResult> {
 		const result = await this.commandRunner.run([
 			"virtual-machines",
 			"instances",
@@ -56,21 +55,11 @@ export class VMCommands {
 			`--id=${id}`,
 			"--expand=image,machine-type,network",
 		]);
-		const instance: QueryInstanceResult = JSON.parse(result);
-		return {
-			id: instance.id,
-			name: instance.name,
-			status: instance.status,
-			machineType: instance.machine_type.name,
-			network: instance.network.ports[0] && {
-				publicIP: instance.network.ports[0].ipAddresses.publicIpAddress,
-				privateIP: instance.network.ports[0].ipAddresses.privateIpAddress,
-			},
-		};
+		return JSON.parse(result) as QueryInstanceResult;
 	}
 
 	@handleMGCCommandError("Failed to list instances")
-	public async listInstances(): Promise<Instance[]> {
+	public async listInstances(): Promise<QueryInstanceResult[]> {
 		const result = await this.commandRunner.run([
 			"virtual-machines",
 			"instances",
@@ -79,20 +68,16 @@ export class VMCommands {
 			"--expand=image,machine-type,network",
 		]);
 		const { instances } = JSON.parse(result);
-		return instances.map((instance: QueryInstanceResult) => ({
-			id: instance.id,
-			name: instance.name,
-			status: instance.status,
-			machineType: instance.machine_type.name,
-			network: instance.network.ports[0] && {
-				publicIP: instance.network.ports[0].ipAddresses.publicIpAddress,
-				privateIP: instance.network.ports[0].ipAddresses.privateIpAddress,
-			},
-		}));
+		return instances as QueryInstanceResult[];
 	}
 
 	@handleMGCCommandError("Failed to create instance")
-	public async createInstance(name: string, image: string, sshKeyName: string, machineType: string): Promise<string> {
+	public async createInstance(
+		name: string,
+		image: string,
+		sshKeyName: string,
+		machineType: string,
+	): Promise<CreateInstanceResult> {
 		const result = await this.commandRunner.run([
 			"virtual-machines",
 			"instances",
@@ -102,7 +87,6 @@ export class VMCommands {
 			`--ssh-key-name=${sshKeyName}`,
 			`--machine-type.name=${machineType}`,
 		]);
-		const instance: CreateInstanceResult = JSON.parse(result);
-		return instance.id;
+		return JSON.parse(result) as CreateInstanceResult;
 	}
 }

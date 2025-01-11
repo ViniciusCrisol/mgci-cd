@@ -2,17 +2,6 @@ import { CommandRunner } from "@src/lib/helpers/command-runner";
 import { VMCommands } from "@src/lib/mgc/commands/vm-commands";
 import { join } from "path";
 
-export type Instance = {
-	id: string;
-	name: string;
-	status: string;
-	machineType: string;
-	network?: {
-		publicIP: string;
-		privateIP: string;
-	};
-};
-
 const cliPath = join(__dirname, "embedded-cli", "linux_amd64@v0_31_0.elf");
 
 export function init(key: string) {
