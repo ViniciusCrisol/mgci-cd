@@ -28,18 +28,6 @@ describe("CommandRunner tests", () => {
 		expect(execFile).toHaveBeenCalledWith(cliPath, [...commandArgs, ...globalArgs], expect.any(Function));
 	});
 
-	it("should reject if execFile returns an error", async () => {
-		const error = new Error("error");
-
-		(execFile as unknown as jest.Mock).mockImplementation((_path, _args, callback) => {
-			callback(error, "", "");
-		});
-
-		await expect(commandRunner.run(["--command", "arg"])).rejects.toThrow(
-			new ExecutionError(`Execution failed: ${error.message}`),
-		);
-	});
-
 	it("should reject if execFile returns stderr", async () => {
 		const stderr = "error";
 
@@ -47,8 +35,16 @@ describe("CommandRunner tests", () => {
 			callback(null, "", stderr);
 		});
 
-		await expect(commandRunner.run(["--command", "arg"])).rejects.toThrow(
-			new ExecutionError(`Execution error: ${stderr}`),
-		);
+		await expect(commandRunner.run(["--command", "arg"])).rejects.toThrow(new ExecutionError(stderr));
+	});
+
+	it("should reject if execFile returns an error", async () => {
+		const error = new Error("error");
+
+		(execFile as unknown as jest.Mock).mockImplementation((_path, _args, callback) => {
+			callback(error, "", "");
+		});
+
+		await expect(commandRunner.run(["--command", "arg"])).rejects.toThrow(new ExecutionError(error.message));
 	});
 });
