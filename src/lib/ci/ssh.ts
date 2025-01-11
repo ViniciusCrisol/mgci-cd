@@ -3,5 +3,5 @@ export interface SSHClient {
 }
 
 export interface SSHFactory {
-	createSSHClient(ip: string, user: string): SSHClient;
+	createSSHClient(host: string, username: string): SSHClient;
 }

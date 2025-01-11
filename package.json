@@ -11,8 +11,12 @@
 		"start": "npm run build && node ./dist/src/main.js execute",
 		"build": "npx tsc && npx tsc-alias && node ./scripts/build/load-assets.js"
 	},
+	"dependencies": {
+		"ssh2": "^1.16.0"
+	},
 	"devDependencies": {
 		"@types/jest": "^29.5.14",
+		"@types/ssh2": "^1.15.3",
 		"copyfiles": "^2.4.1",
 		"jest": "^29.7.0",
 		"ts-jest": "^29.2.5",

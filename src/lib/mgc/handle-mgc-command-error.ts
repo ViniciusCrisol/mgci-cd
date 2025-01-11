@@ -25,11 +25,11 @@ export default function handleMGCCommandError(errorPrefix: string) {
 // TODO: Link a documentation with the possible errors.
 function handleError(error: unknown, errorPrefix: string): never {
 	const errorMessage = error instanceof Error ? error.message : String(error);
-	if (errorMessage.includes("403 Forbidden")) {
-		throw new ForbiddenError(`${errorPrefix}: ${errorMessage}`);
-	}
 	if (errorMessage.includes("404 Not Found")) {
 		throw new NotFoundError(`${errorPrefix}: ${errorMessage}`);
+	}
+	if (errorMessage.includes("403 Forbidden")) {
+		throw new ForbiddenError(`${errorPrefix}: ${errorMessage}`);
 	}
 	if (errorMessage.includes("409 Conflict") || errorMessage.includes("422 Unprocessable Entity")) {
 		throw new ValidationError(`${errorPrefix}: ${errorMessage}`);

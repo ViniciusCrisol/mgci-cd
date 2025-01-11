@@ -1,6 +1,6 @@
 ## API reference:
 
-    `https://docs.magalu.cloud/docs/devops-tools/apis/virtual-machines/`
+    https://docs.magalu.cloud/docs/devops-tools/apis/virtual-machines/
 
 ## Validation issues:
 
