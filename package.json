@@ -6,13 +6,14 @@
 		"node": "20.18.0"
 	},
 	"scripts": {
-		"build": "npx tsc && tsc-alias",
 		"test:unity": "npx jest --projects ./src --coverage",
 		"test:functional": "npx jest --projects ./test --coverage",
-		"start": "npm run build && node ./dist/src/main.js execute"
+		"start": "npm run build && node ./dist/src/main.js execute",
+		"build": "npx tsc && npx tsc-alias && node ./scripts/build/load-assets.js"
 	},
 	"devDependencies": {
 		"@types/jest": "^29.5.14",
+		"copyfiles": "^2.4.1",
 		"jest": "^29.7.0",
 		"ts-jest": "^29.2.5",
 		"tsc-alias": "^1.8.10",

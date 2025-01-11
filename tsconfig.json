@@ -9,10 +9,7 @@
 			"@src/*": ["src/*"],
 			"@test/*": ["test/*"]
 		},
-		"rootDirs": [
-			"src",
-			"test"
-		],
+		"rootDirs": ["src", "test"],
 		"baseUrl": ".",
 		"moduleResolution": "node",
 		"resolveJsonModule": true,
@@ -43,12 +40,7 @@
 		"noFallthroughCasesInSwitch": true,
 		"noPropertyAccessFromIndexSignature": true
 	},
-	"include": [
-		"./src/**/*.ts",
-		"./test/**/*.ts"
-	],
-	"exclude": [
-		"./dist",
-		"./node_modules/*"
-	]
+	"assets": ["./src/**/*.sh", "./src/**/*.elf"],
+	"include": ["./src/**/*.ts", "./test/**/*.ts"],
+	"exclude": ["./dist", "./node_modules/*"]
 }

@@ -73,7 +73,7 @@ export class VMCommands {
 	}
 
 	@handleMGCCommandError("Failed to create instance")
-	public async createInstances(
+	public async createInstance(
 		name: string,
 		image: string,
 		sshKeyName: string,
