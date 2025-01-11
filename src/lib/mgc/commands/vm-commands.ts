@@ -78,7 +78,7 @@ export class VMCommands {
 			"--control.limit=1000",
 			"--expand=image,machine-type,network",
 		]);
-		const instances = JSON.parse(result);
+		const { instances } = JSON.parse(result);
 		return instances.map((instance: QueryInstanceResult) => ({
 			id: instance.id,
 			name: instance.name,

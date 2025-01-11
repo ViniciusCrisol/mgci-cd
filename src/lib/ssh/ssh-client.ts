@@ -29,7 +29,7 @@ export class SSHClient {
 				// execution, the promise is rejected with an ExecutionError.
 				client.exec(command, (error, stream) => {
 					if (error) {
-						return reject(new ExecutionError(`Failed to execute command "${command}": ${error.message}`));
+						return reject(new ExecutionError(`Failed to execute command: ${error.message}`));
 					}
 					let stdout = "";
 					let stderr = "";
@@ -39,13 +39,11 @@ export class SSHClient {
 					// the execution was successful. If the command exits with a non-zero code, the
 					// promise is rejected with an ExecutionError containing the error details.
 					stream
-						.on("close", (code: number, signal: number) => {
+						.on("close", (code: number) => {
 							client.end();
 							if (code !== 0) {
 								return reject(
-									new ExecutionError(
-										`Command "${command}" exited with code ${code} and signal ${signal}. Error output: ${stderr}`,
-									),
+									new ExecutionError(`Command exited with code ${code}. Error output: ${stderr}`),
 								);
 							}
 							resolve(stdout);
