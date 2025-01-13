@@ -1,5 +1,5 @@
-import { IMGCDAO } from "@src/lib/ci/core";
-import { Instance, InstanceStatus } from "@src/lib/ci/core/mgc";
+import { Instance, InstanceStatus } from "@src/lib/ci/mgc";
+import { IMGCDAO } from "@src/lib/ci/mgc/mgc-dao";
 import { ExecutionError } from "@src/lib/errors";
 import { infiniteLoop } from "@src/lib/helpers/infinite-loop";
 

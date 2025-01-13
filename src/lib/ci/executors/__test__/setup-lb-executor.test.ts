@@ -1,16 +1,19 @@
-import { IMGCDAO, ISSHClient, ISSHFactory, Specs } from "@src/lib/ci/core";
-import { Instance, InstanceStatus, MACHINE_TYPE } from "@src/lib/ci/core/mgc";
-import { SetupLBStep } from "@src/lib/ci/core/steps/setup-lb-step";
+import { Specs } from "@src/lib/ci";
+import { Instance, InstanceStatus, MACHINE_TYPE } from "@src/lib/ci/mgc";
+import { IMGCDAO } from "@src/lib/ci/mgc/mgc-dao";
+import { ISSHClient } from "@src/lib/ci/ssh/ssh-client";
+import { ISSHFactory } from "@src/lib/ci/ssh/ssh-factory";
+import { SetupLBExecutor } from "@src/lib/ci/executors/setup-lb-executor";
 import { ValidationError } from "@src/lib/errors";
 
-describe("SetupLBStep tests", () => {
+describe("SetupLBExecutor tests", () => {
 	let specs: Specs;
 	let lbInstance: Instance;
 
 	let mgcDAO: jest.Mocked<IMGCDAO>;
 	let sshClient: jest.Mocked<ISSHClient>;
 	let sshFactory: jest.Mocked<ISSHFactory>;
-	let setupLBStep: SetupLBStep;
+	let setupLBExecutor: SetupLBExecutor;
 
 	beforeEach(() => {
 		specs = {
@@ -53,7 +56,7 @@ describe("SetupLBStep tests", () => {
 		sshFactory = jest.mocked({
 			createSSHClient: jest.fn(),
 		});
-		setupLBStep = new SetupLBStep(mgcDAO, sshFactory);
+		setupLBExecutor = new SetupLBExecutor(mgcDAO, sshFactory);
 	});
 
 	afterEach(() => {
@@ -63,21 +66,21 @@ describe("SetupLBStep tests", () => {
 	describe("execute tests", () => {
 		it("should update the instance if it exists", async () => {
 			mgcDAO.getInstanceByName.mockResolvedValueOnce(lbInstance);
-			jest.spyOn(setupLBStep, "update" as keyof SetupLBStep).mockResolvedValueOnce(undefined);
+			jest.spyOn(setupLBExecutor, "update" as keyof SetupLBExecutor).mockResolvedValueOnce(undefined);
 
-			await setupLBStep.execute(specs);
+			await setupLBExecutor.execute(specs);
 
-			expect(setupLBStep["update"]).toHaveBeenCalledWith(specs, lbInstance);
+			expect(setupLBExecutor["update"]).toHaveBeenCalledWith(specs, lbInstance);
 			expect(mgcDAO.getInstanceByName).toHaveBeenCalledWith(lbInstance.name);
 		});
 
 		it("should create the instance if it does not exist", async () => {
 			mgcDAO.getInstanceByName.mockResolvedValueOnce(undefined);
-			jest.spyOn(setupLBStep, "create" as keyof SetupLBStep).mockResolvedValueOnce(undefined);
+			jest.spyOn(setupLBExecutor, "create" as keyof SetupLBExecutor).mockResolvedValueOnce(undefined);
 
-			await setupLBStep.execute(specs);
+			await setupLBExecutor.execute(specs);
 
-			expect(setupLBStep["create"]).toHaveBeenCalledWith(specs);
+			expect(setupLBExecutor["create"]).toHaveBeenCalledWith(specs);
 			expect(mgcDAO.getInstanceByName).toHaveBeenCalledWith(lbInstance.name);
 		});
 	});
@@ -91,7 +94,7 @@ describe("SetupLBStep tests", () => {
 			MACHINE_TYPE["lower-type"] = { name: "lower-type", weight: 1 };
 			MACHINE_TYPE["higher-type"] = { name: "higher-type", weight: 2 };
 
-			await expect(setupLBStep.execute(specs)).rejects.toThrow(
+			await expect(setupLBExecutor.execute(specs)).rejects.toThrow(
 				new ValidationError(
 					`Cannot downgrade machine type from ${lbInstance.machineType} to ${specs.lb.machineType}`,
 				),
@@ -111,7 +114,7 @@ describe("SetupLBStep tests", () => {
 			MACHINE_TYPE["old-type"] = { name: "old-type", weight: 1 };
 			MACHINE_TYPE["new-type"] = { name: "new-type", weight: 2 };
 
-			await setupLBStep.execute(specs);
+			await setupLBExecutor.execute(specs);
 
 			expect(mgcDAO.retypeInstance).toHaveBeenCalledWith(lbInstance.id, specs.lb.machineType);
 			expect(mgcDAO.getInstanceByID).toHaveBeenCalledWith(lbInstance.id);
@@ -128,7 +131,7 @@ describe("SetupLBStep tests", () => {
 			lbInstance.machineType = "same-type";
 			MACHINE_TYPE["same-type"] = { name: "same-type", weight: 1 };
 
-			await setupLBStep.execute(specs);
+			await setupLBExecutor.execute(specs);
 
 			expect(mgcDAO.retypeInstance).not.toHaveBeenCalled();
 			expect(mgcDAO.getInstanceByName).toHaveBeenCalledWith(lbInstance.name);
@@ -142,7 +145,7 @@ describe("SetupLBStep tests", () => {
 			specs.lb.machineType = "undefined-weight-type";
 			lbInstance.machineType = "another-undefined-weight-type";
 
-			await setupLBStep.execute(specs);
+			await setupLBExecutor.execute(specs);
 
 			expect(mgcDAO.retypeInstance).not.toHaveBeenCalled();
 			expect(mgcDAO.getInstanceByName).toHaveBeenCalledWith(lbInstance.name);
@@ -156,7 +159,7 @@ describe("SetupLBStep tests", () => {
 			mgcDAO.getInstanceByName.mockResolvedValueOnce(undefined);
 			sshFactory.createSSHClient.mockReturnValueOnce(sshClient);
 
-			await setupLBStep.execute(specs);
+			await setupLBExecutor.execute(specs);
 
 			expect(mgcDAO.createInstance).toHaveBeenCalledWith(
 				specs.lb.name,

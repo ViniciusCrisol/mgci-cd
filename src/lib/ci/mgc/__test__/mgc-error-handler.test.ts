@@ -1,33 +1,33 @@
-import handleErrors from "@src/lib/ci/infra/mgc/mgc-error-handler";
+import mgcErrorHandler from "@src/lib/ci/mgc/mgc-error-handler";
 import { ExecutionError, ForbiddenError, NotFoundError, ValidationError } from "@src/lib/errors";
 
 class TestClass {
-	@handleErrors("TestClass")
+	@mgcErrorHandler("TestClass")
 	async methodThatSucceeds() {
 		return "success";
 	}
 
-	@handleErrors("TestClass")
+	@mgcErrorHandler("TestClass")
 	async methodThatThrows403() {
 		throw new Error("403 Forbidden");
 	}
 
-	@handleErrors("TestClass")
+	@mgcErrorHandler("TestClass")
 	async methodThatThrows404() {
 		throw new Error("404 Not Found");
 	}
 
-	@handleErrors("TestClass")
+	@mgcErrorHandler("TestClass")
 	async methodThatThrowsOtherError() {
 		throw new Error("Some other error");
 	}
 
-	@handleErrors("TestClass")
+	@mgcErrorHandler("TestClass")
 	async methodThatThrows409() {
 		throw new Error("409 Conflict");
 	}
 
-	@handleErrors("TestClass")
+	@mgcErrorHandler("TestClass")
 	async methodThatThrowsString() {
 		throw "A string error";
 	}

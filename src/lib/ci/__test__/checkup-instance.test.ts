@@ -1,7 +1,7 @@
 import config from "@src/config";
-import { IMGCDAO } from "@src/lib/ci/core";
-import { checkupInstance } from "@src/lib/ci/core/checkup-instance";
-import { InstanceStatus } from "@src/lib/ci/core/mgc";
+import { checkupInstance } from "@src/lib/ci/checkup-instance";
+import { InstanceStatus } from "@src/lib/ci/mgc";
+import { IMGCDAO } from "@src/lib/ci/mgc/mgc-dao";
 import { ExecutionError } from "@src/lib/errors";
 
 describe("checkupInstance tests", () => {

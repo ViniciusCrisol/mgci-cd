@@ -1,6 +1,9 @@
-import { ISSHClient } from "@src/lib/ci/core";
 import { ExecutionError, NetworkError } from "@src/lib/errors";
 import { Client } from "ssh2";
+
+export interface ISSHClient {
+	run(command: string): Promise<string>;
+}
 
 export class SSHClient implements ISSHClient {
 	constructor(

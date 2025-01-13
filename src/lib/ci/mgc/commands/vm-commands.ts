@@ -1,4 +1,4 @@
-import mgcErrorHandler from "@src/lib/ci/infra/mgc/mgc-error-handler";
+import mgcErrorHandler from "@src/lib/ci/mgc/mgc-error-handler";
 import { CommandRunner } from "@src/lib/helpers/command-runner";
 
 export type QueryInstanceResult = {

@@ -1,8 +1,13 @@
-import { IMGCDAO } from "@src/lib/ci/core";
-import { Instance } from "@src/lib/ci/core/mgc";
-import { MGC } from "@src/lib/ci/infra/mgc";
-import { QueryInstanceResult } from "@src/lib/ci/infra/mgc/commands/vm-commands";
+import { Instance, MGC } from "@src/lib/ci/mgc";
+import { QueryInstanceResult } from "@src/lib/ci/mgc/commands/vm-commands";
 import { NotFoundError } from "@src/lib/errors";
+
+export interface IMGCDAO {
+	createInstance(name: string, image: string, sshKeyName: string, machineType: string): Promise<string>;
+	getInstanceByID(id: string): Promise<Instance | undefined>;
+	getInstanceByName(name: string): Promise<Instance | undefined>;
+	retypeInstance(id: string, machineType: string): Promise<void>;
+}
 
 export class MGCDAO implements IMGCDAO {
 	constructor(private readonly mgc: MGC, private readonly instanceUser: string) {}
