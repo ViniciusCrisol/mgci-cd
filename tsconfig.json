@@ -16,6 +16,7 @@
 		"noUncheckedSideEffectImports": true,
 		"rewriteRelativeImportExtensions": true,
 		"outDir": "dist",
+		"composite": true,
 		"sourceMap": true,
 		"removeComments": true,
 		"esModuleInterop": true,
@@ -42,5 +43,5 @@
 	},
 	"assets": ["./src/**/*.sh", "./src/**/*.elf"],
 	"include": ["./src/**/*.ts", "./test/**/*.ts"],
-	"exclude": ["./dist", "./node_modules/*"]
+	"exclude": ["./dist", "./scripts", "./node_modules/*"]
 }

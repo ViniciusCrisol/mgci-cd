@@ -6,10 +6,10 @@
 		"node": "20.18.0"
 	},
 	"scripts": {
-		"test:unity": "npx jest --projects ./src --coverage",
-		"test:functional": "npx jest --projects ./test --coverage",
+		"test:unity": "jest --projects ./src --coverage",
+		"test:functional": "jest --projects ./test --coverage",
 		"start": "npm run build && node ./dist/src/main.js execute",
-		"build": "npx tsc && npx tsc-alias && node ./scripts/build/load-assets.js"
+		"build": "tsc && tsc-alias && node ./scripts/build/load-assets.js"
 	},
 	"dependencies": {
 		"ssh2": "^1.16.0"
