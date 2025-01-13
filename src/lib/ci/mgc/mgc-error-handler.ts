@@ -21,18 +21,20 @@ export default function mgcErrorHandler(errorPrefix: string) {
 		return propertyDescriptor;
 	};
 }
-
-// TODO: Link a documentation with the possible errors.
 function handleError(error: unknown, errorPrefix: string): never {
 	const errorMessage = error instanceof Error ? error.message : String(error);
-	if (errorMessage.includes("404 Not Found")) {
-		throw new NotFoundError(`${errorPrefix}: ${errorMessage}`);
-	}
-	if (errorMessage.includes("403 Forbidden")) {
-		throw new ForbiddenError(`${errorPrefix}: ${errorMessage}`);
-	}
-	if (errorMessage.includes("409 Conflict") || errorMessage.includes("422 Unprocessable Entity")) {
-		throw new ValidationError(`${errorPrefix}: ${errorMessage}`);
+	const errorMapping = {
+		"400 Bad Request": ValidationError,
+		"401 Unauthorized": ForbiddenError,
+		"403 Forbidden": ForbiddenError,
+		"404 Not Found": NotFoundError,
+		"409 Conflict": ValidationError,
+		"422 Unprocessable Entity": ValidationError,
+	};
+	for (const [slug, ErrorType] of Object.entries(errorMapping)) {
+		if (errorMessage.includes(slug)) {
+			throw new ErrorType(`${errorPrefix}: ${errorMessage}`);
+		}
 	}
 	throw new ExecutionError(`${errorPrefix}: ${errorMessage}`);
 }

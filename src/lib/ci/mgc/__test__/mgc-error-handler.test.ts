@@ -8,6 +8,16 @@ class TestClass {
 	}
 
 	@mgcErrorHandler("TestClass")
+	async methodThatThrows400() {
+		throw new Error("400 Bad Request");
+	}
+
+	@mgcErrorHandler("TestClass")
+	async methodThatThrows401() {
+		throw new Error("401 Unauthorized");
+	}
+
+	@mgcErrorHandler("TestClass")
 	async methodThatThrows403() {
 		throw new Error("403 Forbidden");
 	}
@@ -18,13 +28,18 @@ class TestClass {
 	}
 
 	@mgcErrorHandler("TestClass")
-	async methodThatThrowsOtherError() {
-		throw new Error("Some other error");
+	async methodThatThrows409() {
+		throw new Error("409 Conflict");
 	}
 
 	@mgcErrorHandler("TestClass")
-	async methodThatThrows409() {
-		throw new Error("409 Conflict");
+	async methodThatThrows422() {
+		throw new Error("422 Unprocessable Entity");
+	}
+
+	@mgcErrorHandler("TestClass")
+	async methodThatThrowsOtherError() {
+		throw new Error("Some other error");
 	}
 
 	@mgcErrorHandler("TestClass")
@@ -44,6 +59,16 @@ describe("handleMGCCommandError tests", () => {
 		await expect(testInstance.methodThatSucceeds()).resolves.toBe("success");
 	});
 
+	it("should throw ValidationError for 400 Bad Request error", async () => {
+		await expect(testInstance.methodThatThrows400()).rejects.toThrow(ValidationError);
+		await expect(testInstance.methodThatThrows400()).rejects.toThrow("TestClass: 400 Bad Request");
+	});
+
+	it("should throw ForbiddenError for 401 Unauthorized error", async () => {
+		await expect(testInstance.methodThatThrows401()).rejects.toThrow(ForbiddenError);
+		await expect(testInstance.methodThatThrows401()).rejects.toThrow("TestClass: 401 Unauthorized");
+	});
+
 	it("should throw ForbiddenError for 403 Forbidden error", async () => {
 		await expect(testInstance.methodThatThrows403()).rejects.toThrow(ForbiddenError);
 		await expect(testInstance.methodThatThrows403()).rejects.toThrow("TestClass: 403 Forbidden");
@@ -57,6 +82,11 @@ describe("handleMGCCommandError tests", () => {
 	it("should throw ValidationError for 409 Conflict error", async () => {
 		await expect(testInstance.methodThatThrows409()).rejects.toThrow(ValidationError);
 		await expect(testInstance.methodThatThrows409()).rejects.toThrow("TestClass: 409 Conflict");
+	});
+
+	it("should throw ValidationError for 422 Unprocessable Entity error", async () => {
+		await expect(testInstance.methodThatThrows422()).rejects.toThrow(ValidationError);
+		await expect(testInstance.methodThatThrows422()).rejects.toThrow("TestClass: 422 Unprocessable Entity");
 	});
 
 	it("should throw ExecutionError for other errors", async () => {
