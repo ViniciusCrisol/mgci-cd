@@ -1,59 +1,75 @@
 import { Instance, MGC } from "@src/lib/ci/mgc";
-import { QueryInstanceResult } from "@src/lib/ci/mgc/commands/vm-commands";
 import { NotFoundError } from "@src/lib/errors";
 
 export interface IMGCDAO {
-	createInstance(name: string, image: string, sshKeyName: string, machineType: string): Promise<string>;
+	createInstance(name: string, image: string, sshKeyName: string, machineType: string): Promise<CreateInstanceResult>;
 	getInstanceByID(id: string): Promise<Instance | undefined>;
 	getInstanceByName(name: string): Promise<Instance | undefined>;
 	retypeInstance(id: string, machineType: string): Promise<void>;
 }
 
+export interface CreateInstanceResult {
+	id: string;
+}
+
 export class MGCDAO implements IMGCDAO {
 	constructor(private readonly mgc: MGC, private readonly instanceUser: string) {}
 
-	public async createInstance(name: string, image: string, sshKeyName: string, machineType: string): Promise<string> {
-		const { id } = await this.mgc.vm.createInstance(name, image, sshKeyName, machineType);
-		return id;
+	public async createInstance(
+		name: string,
+		image: string,
+		sshKeyName: string,
+		machineType: string,
+	): Promise<CreateInstanceResult> {
+		const result = await this.mgc.vm.createInstance(name, image, sshKeyName, machineType);
+		return {
+			id: result.id,
+		};
 	}
 
 	public async getInstanceByID(id: string): Promise<Instance | undefined> {
 		try {
-			const instance = await this.mgc.vm.getInstance(id);
-			return this.mapInstance(instance);
+			const result = await this.mgc.vm.getInstance(id);
+			return {
+				id: result.id,
+				name: result.name,
+				status: result.status,
+				machineType: result.machine_type.name,
+				network: {
+					user: this.instanceUser,
+					publicIP: result.network.ports[0]?.ipAddresses.publicIpAddress || "",
+					privateIP: result.network.ports[0]?.ipAddresses.privateIpAddress || "",
+				},
+			};
 		} catch (error) {
 			if (error instanceof NotFoundError) {
-				return undefined;
+				return;
 			}
 			throw error;
 		}
 	}
 
 	public async getInstanceByName(name: string): Promise<Instance | undefined> {
-		const instances = await this.mgc.vm.listInstances();
-		for (const instance of instances) {
-			if (instance.name === name) {
-				return this.mapInstance(instance);
+		const results = await this.mgc.vm.listInstances();
+		for (const result of results) {
+			if (result.name === name) {
+				return {
+					id: result.id,
+					name: result.name,
+					status: result.status,
+					machineType: result.machine_type.name,
+					network: {
+						user: this.instanceUser,
+						publicIP: result.network.ports[0]?.ipAddresses.publicIpAddress || "",
+						privateIP: result.network.ports[0]?.ipAddresses.privateIpAddress || "",
+					},
+				};
 			}
 		}
-		return undefined;
+		return;
 	}
 
 	public async retypeInstance(_id: string, _machineType: string): Promise<void> {
 		throw new Error("Method not implemented.");
-	}
-
-	private mapInstance(instance: QueryInstanceResult): Instance {
-		return {
-			id: instance.id,
-			name: instance.name,
-			status: instance.status,
-			machineType: instance.machine_type.name,
-			network: {
-				user: this.instanceUser,
-				publicIP: instance.network.ports[0]?.ipAddresses.publicIpAddress || "",
-				privateIP: instance.network.ports[0]?.ipAddresses.privateIpAddress || "",
-			},
-		};
 	}
 }
