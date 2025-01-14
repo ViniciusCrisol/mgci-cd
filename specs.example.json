@@ -1,0 +1,13 @@
+{
+	"name": "name",
+	"sshKeyName": "ssh-key-name",
+	"lb": {
+		"machineType": "BV2-4-40",
+		"config": {
+			"rollout": {
+				"size": 5,
+				"interval": 5000
+			}
+		}
+	}
+}

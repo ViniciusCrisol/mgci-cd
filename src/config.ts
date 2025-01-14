@@ -1,5 +1,8 @@
 export default {
 	specsPath: process.env["SPECS_PATH"] || "",
+	lb: {
+		configFile: "/config.json",
+	},
 	ssh: {
 		port: 22,
 		privateKey: process.env["SSH_PRIVATE_KEY"] || "",
