@@ -1,6 +1,9 @@
 # App
 dist
 
+# Envs
+.env
+
 # Logs
 logs
 *.log

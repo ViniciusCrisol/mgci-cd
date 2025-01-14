@@ -1,9 +1,5 @@
+require('dotenv').config()
 const path = require("path");
-
-process.env["NODE_ENV"] = "test";
-process.env["INFINITE_LOOP_INTERVAL"] = "0";
-process.env["INFINITE_LOOP_MAX_RETRIES"] = "0";
-
 module.exports = {
 	preset: "ts-jest",
 	clearMocks: true,

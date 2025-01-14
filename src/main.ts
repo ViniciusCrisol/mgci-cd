@@ -1,9 +1,19 @@
-import { CI } from "@src/lib/ci";
+import config from "@src/config";
+import { SetupLBExecutor } from "@src/lib/ci/executors/setup-lb-executor";
+import { init } from "@src/lib/ci/mgc";
+import { MGCDAO } from "@src/lib/ci/mgc/mgc-dao";
+import { SSHFactory } from "@src/lib/ci/ssh/ssh-factory";
+import { readFileSync } from "fs";
 
 export async function main() {
-	const ci = new CI("Hello World!");
-	const message = await ci.execute();
-	console.log(message);
+	const mgc = init(config.mgc.token);
+	const mgcDAO = new MGCDAO(mgc, config.mgc.instanceUser);
+	const sshFactory = new SSHFactory(config.ssh.port, config.ssh.privateKey);
+
+	const setupLBExecutor = new SetupLBExecutor(mgcDAO, sshFactory);
+
+	const specs = JSON.parse(readFileSync(config.specsPath, "utf-8"));
+	await setupLBExecutor.execute(specs);
 }
 
 if (process.argv.includes("execute")) {
