@@ -1,4 +1,5 @@
 import { Instance, MGC } from "@src/lib/ci/mgc";
+import { QueryInstanceResult } from "@src/lib/ci/mgc/commands/vm-commands";
 import { NotFoundError } from "@src/lib/errors";
 
 export interface IMGCDAO {
@@ -21,6 +22,8 @@ export class MGCDAO implements IMGCDAO {
 		sshKeyName: string,
 		machineType: string,
 	): Promise<CreateInstanceResult> {
+		// TODO: Add logging here. The logging system should
+		// be implemented within the infrastructure components.
 		const result = await this.mgc.vm.createInstance(name, image, sshKeyName, machineType);
 		return {
 			id: result.id,
@@ -28,19 +31,10 @@ export class MGCDAO implements IMGCDAO {
 	}
 
 	public async getInstanceByID(id: string): Promise<Instance | undefined> {
+		// TODO: Add logging here. The logging system should
+		// be implemented within the infrastructure components.
 		try {
-			const result = await this.mgc.vm.getInstance(id);
-			return {
-				id: result.id,
-				name: result.name,
-				status: result.status,
-				machineType: result.machine_type.name,
-				network: {
-					user: this.instanceUser,
-					publicIP: result.network.ports[0]?.ipAddresses.publicIpAddress || "",
-					privateIP: result.network.ports[0]?.ipAddresses.privateIpAddress || "",
-				},
-			};
+			return this.mapInstance(await this.mgc.vm.getInstance(id));
 		} catch (error) {
 			if (error instanceof NotFoundError) {
 				return;
@@ -50,26 +44,39 @@ export class MGCDAO implements IMGCDAO {
 	}
 
 	public async getInstanceByName(name: string): Promise<Instance | undefined> {
+		// TODO: Implement a pagination system here.
+
+		// TODO: Add logging here. The logging system should
+		// be implemented within the infrastructure components.
+
+		// Currently, it is not possible to search by name
+		// directly, hence iterating through all instances.
 		const results = await this.mgc.vm.listInstances();
 		for (const result of results) {
 			if (result.name === name) {
-				return {
-					id: result.id,
-					name: result.name,
-					status: result.status,
-					machineType: result.machine_type.name,
-					network: {
-						user: this.instanceUser,
-						publicIP: result.network.ports[0]?.ipAddresses.publicIpAddress || "",
-						privateIP: result.network.ports[0]?.ipAddresses.privateIpAddress || "",
-					},
-				};
+				return this.mapInstance(result);
 			}
 		}
 		return;
 	}
 
 	public async retypeInstance(id: string, machineType: string): Promise<void> {
-		await this.mgc.vm.resizeInstance(id, machineType);
+		// TODO: Add logging here. The logging system should
+		// be implemented within the infrastructure components.
+		await this.mgc.vm.retypeInstance(id, machineType);
+	}
+
+	private mapInstance(result: QueryInstanceResult): Instance {
+		return {
+			id: result.id,
+			name: result.name,
+			status: result.status,
+			machineType: result.machine_type.name,
+			network: {
+				user: this.instanceUser,
+				publicIP: result.network.ports[0]?.ipAddresses.publicIpAddress || "",
+				privateIP: result.network.ports[0]?.ipAddresses.privateIpAddress || "",
+			},
+		};
 	}
 }
