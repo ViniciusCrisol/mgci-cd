@@ -31,6 +31,7 @@ describe("MGCDAO tests", () => {
 				createInstance: jest.fn(),
 				listInstances: jest.fn(),
 				getInstance: jest.fn(),
+				resizeInstance: jest.fn(),
 			},
 		} as unknown as jest.Mocked<MGC>;
 		mgcDAO = new MGCDAO(mgcMock, instanceUser);
@@ -114,6 +115,16 @@ describe("MGCDAO tests", () => {
 
 			expect(result).toBeUndefined();
 			expect(mgcMock.vm.listInstances).toHaveBeenCalled();
+		});
+	});
+
+	describe("retypeInstance tests", () => {
+		it("should retype an instance", async () => {
+			mgcMock.vm.resizeInstance as jest.Mock;
+
+			await mgcDAO.retypeInstance("instance-id", "new-machineType");
+
+			expect(mgcMock.vm.resizeInstance).toHaveBeenCalledWith("instance-id", "new-machineType");
 		});
 	});
 });

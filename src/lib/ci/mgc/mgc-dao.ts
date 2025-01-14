@@ -69,7 +69,7 @@ export class MGCDAO implements IMGCDAO {
 		return;
 	}
 
-	public async retypeInstance(_id: string, _machineType: string): Promise<void> {
-		throw new Error("Method not implemented.");
+	public async retypeInstance(id: string, machineType: string): Promise<void> {
+		await this.mgc.vm.resizeInstance(id, machineType);
 	}
 }

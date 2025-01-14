@@ -89,4 +89,15 @@ export class VMCommands {
 		]);
 		return JSON.parse(result) as CreateInstanceResult;
 	}
+
+	@mgcErrorHandler("Failed to resize instance")
+	public async resizeInstance(id: string, machineType: string): Promise<void> {
+		await this.commandRunner.run([
+			"virtual-machines",
+			"instances",
+			"retype",
+			`--id=${id}`,
+			`--machine-type.name=${machineType}`,
+		]);
+	}
 }
