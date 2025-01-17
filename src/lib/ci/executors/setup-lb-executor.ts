@@ -28,9 +28,7 @@ export class SetupLBExecutor {
 			MACHINE_TYPE[lbInstance.machineType] &&
 			MACHINE_TYPE[specs.lb.machineType]
 		) {
-			if (
-				(MACHINE_TYPE[specs.lb.machineType]?.weight ?? 0) < (MACHINE_TYPE[lbInstance.machineType]?.weight ?? 0)
-			) {
+			if ((MACHINE_TYPE[specs.lb.machineType]?.disk ?? 0) < (MACHINE_TYPE[lbInstance.machineType]?.disk ?? 0)) {
 				throw new ValidationError(
 					`Cannot downgrade machine type from ${lbInstance.machineType} to ${specs.lb.machineType}`,
 				);

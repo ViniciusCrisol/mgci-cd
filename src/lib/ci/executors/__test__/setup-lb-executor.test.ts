@@ -91,8 +91,8 @@ describe("SetupLBExecutor tests", () => {
 
 			specs.lb.machineType = "lower-type";
 			lbInstance.machineType = "higher-type";
-			MACHINE_TYPE["lower-type"] = { name: "lower-type", weight: 1 };
-			MACHINE_TYPE["higher-type"] = { name: "higher-type", weight: 2 };
+			MACHINE_TYPE["lower-type"] = { cpu: 1, ram: 2, disk: 10 };
+			MACHINE_TYPE["higher-type"] = { cpu: 1, ram: 2, disk: 20 };
 
 			await expect(setupLBExecutor.execute(specs)).rejects.toThrow(
 				new ValidationError(
@@ -111,8 +111,8 @@ describe("SetupLBExecutor tests", () => {
 
 			specs.lb.machineType = "new-type";
 			lbInstance.machineType = "old-type";
-			MACHINE_TYPE["old-type"] = { name: "old-type", weight: 1 };
-			MACHINE_TYPE["new-type"] = { name: "new-type", weight: 2 };
+			MACHINE_TYPE["old-type"] = { cpu: 1, ram: 2, disk: 10 };
+			MACHINE_TYPE["new-type"] = { cpu: 1, ram: 2, disk: 20 };
 
 			await setupLBExecutor.execute(specs);
 
@@ -129,7 +129,7 @@ describe("SetupLBExecutor tests", () => {
 
 			specs.lb.machineType = "same-type";
 			lbInstance.machineType = "same-type";
-			MACHINE_TYPE["same-type"] = { name: "same-type", weight: 1 };
+			MACHINE_TYPE["same-type"] = { cpu: 1, ram: 2, disk: 10 };
 
 			await setupLBExecutor.execute(specs);
 

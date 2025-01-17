@@ -20,41 +20,86 @@ export type Instance = {
 
 export enum InstanceStatus {
 	COMPLETED = "completed",
+
 	CREATING_ERROR = "creating_error",
-	CREATING_NETWORK_ERROR = "creating_network_error",
 	CREATING_ERROR_QUOTA = "creating_error_quota",
+	CREATING_NETWORK_ERROR = "creating_network_error",
 	CREATING_ERROR_QUOTA_RAM = "creating_error_quota_ram",
 	CREATING_ERROR_QUOTA_VCPU = "creating_error_quota_vcpu",
 	CREATING_ERROR_QUOTA_DISK = "creating_error_quota_disk",
 	CREATING_ERROR_QUOTA_INSTANCE = "creating_error_quota_instance",
 	CREATING_ERROR_QUOTA_FLOATING_IP = "creating_error_quota_floating_ip",
+
 	RETYPING_ERROR = "retyping_error",
 	RETYPING_ERROR_QUOTA = "retyping_error_quota",
 }
 
 export const MACHINE_TYPE: {
 	[key: string]: {
-		name: string;
-		weight: number;
+		cpu: number;
+		ram: number;
+		disk: number;
 	};
 } = {
-	BV1_2_10: { name: "BV1-2-10", weight: 1 },
-	BV1_2_40: { name: "BV1-2-40", weight: 2 },
-	BV1_2_100: { name: "BV1-2-100", weight: 3 },
-	BV1_2_150: { name: "BV1-2-150", weight: 4 },
-	BV2_4_20: { name: "BV2-4-20", weight: 5 },
-	BV2_4_40: { name: "BV2-4-40", weight: 6 },
-	BV2_4_100: { name: "BV2-4-100", weight: 7 },
-	BV2_4_150: { name: "BV2-4-150", weight: 8 },
-	BV2_8_10: { name: "BV2-8-10", weight: 9 },
-	BV2_8_100: { name: "BV2-8-100", weight: 10 },
-	BV4_8_20: { name: "BV4-8-20", weight: 11 },
-	BV4_16_10: { name: "BV4-16-10", weight: 12 },
-	BV4_16_20: { name: "BV4-16-20", weight: 13 },
-	BV8_16_10: { name: "BV8-16-10", weight: 14 },
-	BV8_16_40: { name: "BV8-16-40", weight: 15 },
-	BV8_32_20: { name: "BV8-32-20", weight: 16 },
-	BV8_32_40: { name: "BV8-32-40", weight: 17 },
+	"BV1-1-10": { cpu: 1, ram: 1, disk: 10 },
+	"BV1-1-20": { cpu: 1, ram: 1, disk: 20 },
+	"BV1-1-40": { cpu: 1, ram: 1, disk: 40 },
+	"BV1-1-100": { cpu: 1, ram: 1, disk: 100 },
+	"BV1-1-150": { cpu: 1, ram: 1, disk: 150 },
+
+	"BV1-2-10": { cpu: 1, ram: 2, disk: 10 },
+	"BV1-2-20": { cpu: 1, ram: 2, disk: 20 },
+	"BV1-2-40": { cpu: 1, ram: 2, disk: 40 },
+	"BV1-2-100": { cpu: 1, ram: 2, disk: 100 },
+	"BV1-2-150": { cpu: 1, ram: 2, disk: 150 },
+
+	"BV1-4-10": { cpu: 1, ram: 4, disk: 10 },
+	"BV1-4-20": { cpu: 1, ram: 4, disk: 20 },
+	"BV1-4-40": { cpu: 1, ram: 4, disk: 40 },
+	"BV1-4-100": { cpu: 1, ram: 4, disk: 100 },
+	"BV1-4-150": { cpu: 1, ram: 4, disk: 150 },
+
+	"BV2-2-10": { cpu: 2, ram: 2, disk: 10 },
+	"BV2-2-20": { cpu: 2, ram: 2, disk: 20 },
+	"BV2-2-40": { cpu: 2, ram: 2, disk: 40 },
+	"BV2-2-100": { cpu: 2, ram: 2, disk: 100 },
+	"BV2-2-150": { cpu: 2, ram: 2, disk: 150 },
+
+	"BV2-4-10": { cpu: 2, ram: 4, disk: 10 },
+	"BV2-4-20": { cpu: 2, ram: 4, disk: 20 },
+	"BV2-4-40": { cpu: 2, ram: 4, disk: 40 },
+	"BV2-4-100": { cpu: 2, ram: 4, disk: 100 },
+	"BV2-4-150": { cpu: 2, ram: 4, disk: 150 },
+
+	"BV2-8-10": { cpu: 2, ram: 8, disk: 10 },
+	"BV2-8-20": { cpu: 2, ram: 8, disk: 20 },
+	"BV2-8-40": { cpu: 2, ram: 8, disk: 40 },
+	"BV2-8-100": { cpu: 2, ram: 8, disk: 100 },
+	"BV2-8-150": { cpu: 2, ram: 8, disk: 150 },
+
+	"BV4-16-10": { cpu: 4, ram: 16, disk: 10 },
+	"BV4-16-20": { cpu: 4, ram: 16, disk: 20 },
+	"BV4-16-40": { cpu: 4, ram: 16, disk: 40 },
+	"BV4-16-100": { cpu: 4, ram: 16, disk: 100 },
+	"BV4-16-150": { cpu: 4, ram: 16, disk: 150 },
+
+	"BV4-8-10": { cpu: 4, ram: 8, disk: 10 },
+	"BV4-8-20": { cpu: 4, ram: 8, disk: 20 },
+	"BV4-8-40": { cpu: 4, ram: 8, disk: 40 },
+	"BV4-8-100": { cpu: 4, ram: 8, disk: 100 },
+	"BV4-8-150": { cpu: 4, ram: 8, disk: 150 },
+
+	"BV8-16-10": { cpu: 8, ram: 16, disk: 10 },
+	"BV8-16-20": { cpu: 8, ram: 16, disk: 20 },
+	"BV8-16-40": { cpu: 8, ram: 16, disk: 40 },
+	"BV8-16-100": { cpu: 8, ram: 16, disk: 100 },
+	"BV8-16-150": { cpu: 8, ram: 16, disk: 150 },
+
+	"BV8-32-10": { cpu: 8, ram: 32, disk: 10 },
+	"BV8-32-20": { cpu: 8, ram: 32, disk: 20 },
+	"BV8-32-40": { cpu: 8, ram: 32, disk: 40 },
+	"BV8-32-100": { cpu: 8, ram: 32, disk: 100 },
+	"BV8-32-150": { cpu: 8, ram: 32, disk: 150 },
 };
 
 const cliPath = join(__dirname, "embedded-cli", "linux_amd64@v0_31_0.elf");
