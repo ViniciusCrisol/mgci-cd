@@ -17,10 +17,10 @@ describe("SetupLBExecutor tests", () => {
 
 	beforeEach(() => {
 		specs = {
+			image: "test-image",
+			sshKeyName: "test-key",
 			lb: {
 				name: "test-lb",
-				image: "test-image",
-				sshKeyName: "test-key",
 				machineType: "BV1-2-10",
 				config: {
 					ips: [],
@@ -29,6 +29,13 @@ describe("SetupLBExecutor tests", () => {
 						size: 5,
 						interval: 5000,
 					},
+				},
+			},
+			instances: {
+				name: "test-v1_0_0",
+				machineType: "BV1-1-10",
+				config: {
+					replicas: 3,
 				},
 			},
 		};
@@ -163,8 +170,8 @@ describe("SetupLBExecutor tests", () => {
 
 			expect(mgcDAO.createInstance).toHaveBeenCalledWith(
 				specs.lb.name,
-				specs.lb.image,
-				specs.lb.sshKeyName,
+				specs.image,
+				specs.sshKeyName,
 				specs.lb.machineType,
 			);
 			expect(mgcDAO.getInstanceByID).toHaveBeenCalledWith(lbInstance.id);

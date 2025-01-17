@@ -44,8 +44,8 @@ export class SetupLBExecutor {
 	private async create(specs: Specs): Promise<void> {
 		const { id: instanceID } = await this.mgcDAO.createInstance(
 			specs.lb.name,
-			specs.lb.image,
-			specs.lb.sshKeyName,
+			specs.image,
+			specs.sshKeyName,
 			specs.lb.machineType,
 		);
 		const lbInstance = await checkupInstance(instanceID, this.mgcDAO);

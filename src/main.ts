@@ -14,10 +14,10 @@ export async function main() {
 
 	const specs = JSON.parse(readFileSync(config.specsPath, "utf-8"));
 	await setupLBExecutor.execute({
+		image: config.mgc.instanceImage,
+		sshKeyName: specs.sshKeyName,
 		lb: {
 			name: `${specs.name}_lb`,
-			image: config.mgc.instanceImage,
-			sshKeyName: specs.sshKeyName,
 			machineType: specs.lb.machineType,
 			config: {
 				ips: [],
@@ -26,6 +26,13 @@ export async function main() {
 					size: specs.lb.config.rollout.size,
 					interval: specs.lb.config.rollout.interval,
 				},
+			},
+		},
+		instances: {
+			name: `${specs.name}-v1_0_0`,
+			machineType: specs.app.machineType,
+			config: {
+				replicas: specs.app.config.replicas,
 			},
 		},
 	});
