@@ -1,15 +1,17 @@
 export type Specs = {
-	image: string;
+	name: string;
+	version: string;
 	sshKeyName: string;
+	instanceImage: string;
 	lb: {
 		name: string;
-		machineType: string;
 		config: LBConfig;
-	};
-	instances: {
-		name: string;
 		machineType: string;
-		config: InstanceConfig;
+	};
+	app: {
+		name: string;
+		config: AppConfig;
+		machineType: string;
 	};
 };
 
@@ -22,6 +24,8 @@ export type LBConfig = {
 	};
 };
 
-export type InstanceConfig = {
+export type AppConfig = {
+	port: string;
+	image: string;
 	replicas: number;
 };

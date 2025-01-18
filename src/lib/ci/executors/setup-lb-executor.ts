@@ -44,13 +44,13 @@ export class SetupLBExecutor {
 	private async create(specs: Specs): Promise<void> {
 		const { id: instanceID } = await this.mgcDAO.createInstance(
 			specs.lb.name,
-			specs.image,
+			specs.instanceImage,
 			specs.sshKeyName,
 			specs.lb.machineType,
 		);
-		const lbInstance = await checkupInstance(instanceID, this.mgcDAO);
+		const instance = await checkupInstance(instanceID, this.mgcDAO);
 		const command = new SetupLBCommandBuilder(specs.lb.config).build();
-		const sshClient = this.sshFactory.createSSHClient(lbInstance.network.publicIP, lbInstance.network.user);
+		const sshClient = this.sshFactory.createSSHClient(instance.network.publicIP, instance.network.user);
 		await infiniteLoop(async () => {
 			await sshClient.run(command);
 		});

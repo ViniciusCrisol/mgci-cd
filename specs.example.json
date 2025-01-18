@@ -1,13 +1,22 @@
 {
 	"name": "name",
+	"version": "v1.0.0",
 	"sshKeyName": "ssh-key-name",
 	"lb": {
-		"machineType": "BV2-4-40",
 		"config": {
 			"rollout": {
 				"size": 5,
 				"interval": 5000
 			}
-		}
+		},
+		"machineType": "BV1-4-10"
+	},
+	"app": {
+		"config": {
+			"port": "1250",
+			"image": "image",
+			"replicas": 5
+		},
+		"machineType": "BV1-2-10"
 	}
 }
