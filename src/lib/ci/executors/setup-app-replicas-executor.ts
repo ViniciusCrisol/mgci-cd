@@ -20,7 +20,7 @@ export class SetupAppReplicasExecutor {
 
 	private async createReplica(specs: Specs, replicaNumber: number) {
 		const { id: instanceID } = await this.mgcDAO.createInstance(
-			specs.app.name + "-r" + replicaNumber,
+			this.buildReplicaName(specs, replicaNumber),
 			specs.instanceImage,
 			specs.sshKeyName,
 			specs.app.machineType,
@@ -31,5 +31,9 @@ export class SetupAppReplicasExecutor {
 		await infiniteLoop(async () => {
 			await sshClient.run(command);
 		});
+	}
+
+	private buildReplicaName(specs: Specs, replicaNumber: number): string {
+		return `${specs.app.name}-r${replicaNumber}`;
 	}
 }
