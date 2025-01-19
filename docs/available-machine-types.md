@@ -1,0 +1,56 @@
+# Opções de Máquinas Disponíveis na CI
+
+Atualmente, as seguintes opções de máquinas estão disponíveis na CI, com especificações de tipo, CPU, RAM e disco. Essas máquinas podem ser utilizadas tanto para o Load Balancer (LB) quanto para as réplicas. Recomenda-se, para grande parte das aplicações web, que o LB utilize uma máquina maior, pois ele lidará com a maior parte do tráfego. No entanto, dependendo do caso, a situação pode se inverter.
+
+| MACHINE_TYPE | CPU | RAM | DISK |
+| ------------ | --- | --- | ---- |
+| BV1-1-10     | 1   | 1   | 10   |
+| BV1-1-20     | 1   | 1   | 20   |
+| BV1-1-40     | 1   | 1   | 40   |
+| BV1-1-100    | 1   | 1   | 100  |
+| BV1-1-150    | 1   | 1   | 150  |
+| BV1-2-10     | 1   | 2   | 10   |
+| BV1-2-20     | 1   | 2   | 20   |
+| BV1-2-40     | 1   | 2   | 40   |
+| BV1-2-100    | 1   | 2   | 100  |
+| BV1-2-150    | 1   | 2   | 150  |
+| BV1-4-10     | 1   | 4   | 10   |
+| BV1-4-20     | 1   | 4   | 20   |
+| BV1-4-40     | 1   | 4   | 40   |
+| BV1-4-100    | 1   | 4   | 100  |
+| BV1-4-150    | 1   | 4   | 150  |
+| BV2-2-10     | 2   | 2   | 10   |
+| BV2-2-20     | 2   | 2   | 20   |
+| BV2-2-40     | 2   | 2   | 40   |
+| BV2-2-100    | 2   | 2   | 100  |
+| BV2-2-150    | 2   | 2   | 150  |
+| BV2-4-10     | 2   | 4   | 10   |
+| BV2-4-20     | 2   | 4   | 20   |
+| BV2-4-40     | 2   | 4   | 40   |
+| BV2-4-100    | 2   | 4   | 100  |
+| BV2-4-150    | 2   | 4   | 150  |
+| BV2-8-10     | 2   | 8   | 10   |
+| BV2-8-20     | 2   | 8   | 20   |
+| BV2-8-40     | 2   | 8   | 40   |
+| BV2-8-100    | 2   | 8   | 100  |
+| BV2-8-150    | 2   | 8   | 150  |
+| BV4-16-10    | 4   | 16  | 10   |
+| BV4-16-20    | 4   | 16  | 20   |
+| BV4-16-40    | 4   | 16  | 40   |
+| BV4-16-100   | 4   | 16  | 100  |
+| BV4-16-150   | 4   | 16  | 150  |
+| BV4-8-10     | 4   | 8   | 10   |
+| BV4-8-20     | 4   | 8   | 20   |
+| BV4-8-40     | 4   | 8   | 40   |
+| BV4-8-100    | 4   | 8   | 100  |
+| BV4-8-150    | 4   | 8   | 150  |
+| BV8-16-10    | 8   | 16  | 10   |
+| BV8-16-20    | 8   | 16  | 20   |
+| BV8-16-40    | 8   | 16  | 40   |
+| BV8-16-100   | 8   | 16  | 100  |
+| BV8-16-150   | 8   | 16  | 150  |
+| BV8-32-10    | 8   | 32  | 10   |
+| BV8-32-20    | 8   | 32  | 20   |
+| BV8-32-40    | 8   | 32  | 40   |
+| BV8-32-100   | 8   | 32  | 100  |
+| BV8-32-150   | 8   | 32  | 150  |
