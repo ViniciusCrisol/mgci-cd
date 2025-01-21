@@ -1,5 +1,6 @@
 import config from "@src/config";
 import { ExecutionError } from "@src/lib/errors";
+import { timeout } from "@src/lib/helpers/timeout";
 
 export async function infiniteLoop<T>(
 	fn: () => Promise<T>,
@@ -17,13 +18,9 @@ export async function infiniteLoop<T>(
 					throw new ExecutionError(`Failed after ${maxRetries} attempts: ${String(error)}`);
 				}
 			}
-			await delay(interval);
+			await timeout(interval);
 			return attempt(retries + 1);
 		}
 	};
 	return attempt(0);
-}
-
-async function delay(ms: number) {
-	await new Promise((resolve) => setTimeout(resolve, ms));
 }
