@@ -2,8 +2,11 @@ import { SetupAppReplicaCommandBuilder } from "@src/lib/ci/command-builders/setu
 
 const expectedCommand = `bash -c -e '
 sudo DEBIAN_FRONTEND=noninteractive apt-get update -y 2> /dev/null
-
 sudo DEBIAN_FRONTEND=noninteractive apt-get install nginx -y 2> /dev/null
+
+# This script assumes that the system packages have been previously
+# updated. Make sure to run the update beforehand to avoid potential
+# compatibility issues or outdated packages.
 
 sudo DEBIAN_FRONTEND=noninteractive apt-get install curl -y 2> /dev/null
 sudo DEBIAN_FRONTEND=noninteractive apt-get install ca-certificates -y 2> /dev/null
