@@ -1,7 +1,7 @@
 import { Specs } from "@src/lib/ci";
 import { checkupInstance } from "@src/lib/ci/checkup-instance";
 import { SetupLBCommandBuilder } from "@src/lib/ci/command-builders/setup-lb-command-builder";
-import { Instance, MACHINE_TYPE } from "@src/lib/ci/mgc";
+import { Instance, MachineType } from "@src/lib/ci/mgc";
 import { IMGCDAO } from "@src/lib/ci/mgc/mgc-dao";
 import { ISSHFactory } from "@src/lib/ci/ssh/ssh-factory";
 import { ValidationError } from "@src/lib/errors";
@@ -25,10 +25,10 @@ export class SetupLBExecutor {
 		// checks are necessary here.
 		if (
 			specs.lb.machineType !== lbInstance.machineType &&
-			MACHINE_TYPE[lbInstance.machineType] &&
-			MACHINE_TYPE[specs.lb.machineType]
+			MachineType[lbInstance.machineType] &&
+			MachineType[specs.lb.machineType]
 		) {
-			if ((MACHINE_TYPE[specs.lb.machineType]?.disk ?? 0) < (MACHINE_TYPE[lbInstance.machineType]?.disk ?? 0)) {
+			if ((MachineType[specs.lb.machineType]?.disk ?? 0) < (MachineType[lbInstance.machineType]?.disk ?? 0)) {
 				throw new ValidationError(
 					`Cannot downgrade machine type from ${lbInstance.machineType} to ${specs.lb.machineType}`,
 				);

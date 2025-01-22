@@ -1,9 +1,9 @@
 import { Specs } from "@src/lib/ci";
-import { Instance, InstanceStatus, MACHINE_TYPE } from "@src/lib/ci/mgc";
+import { SetupLBExecutor } from "@src/lib/ci/executors/setup-lb-executor";
+import { Instance, InstanceStatus, MachineType } from "@src/lib/ci/mgc";
 import { IMGCDAO } from "@src/lib/ci/mgc/mgc-dao";
 import { ISSHClient } from "@src/lib/ci/ssh/ssh-client";
 import { ISSHFactory } from "@src/lib/ci/ssh/ssh-factory";
-import { SetupLBExecutor } from "@src/lib/ci/executors/setup-lb-executor";
 import { ValidationError } from "@src/lib/errors";
 
 describe("SetupLBExecutor tests", () => {
@@ -102,8 +102,8 @@ describe("SetupLBExecutor tests", () => {
 
 			specs.lb.machineType = "lower-type";
 			lbInstance.machineType = "higher-type";
-			MACHINE_TYPE["lower-type"] = { cpu: 1, ram: 2, disk: 10 };
-			MACHINE_TYPE["higher-type"] = { cpu: 1, ram: 2, disk: 20 };
+			MachineType["lower-type"] = { cpu: 1, ram: 2, disk: 10 };
+			MachineType["higher-type"] = { cpu: 1, ram: 2, disk: 20 };
 
 			await expect(setupLBExecutor.execute(specs)).rejects.toThrow(
 				new ValidationError(
@@ -112,8 +112,8 @@ describe("SetupLBExecutor tests", () => {
 			);
 			expect(mgcDAO.getInstanceByName).toHaveBeenCalledWith(lbInstance.name);
 
-			delete MACHINE_TYPE["higher-type"];
-			delete MACHINE_TYPE["lower-type"];
+			delete MachineType["higher-type"];
+			delete MachineType["lower-type"];
 		});
 
 		it("should retype the instance and run checkupInstance if machine type is different", async () => {
@@ -122,8 +122,8 @@ describe("SetupLBExecutor tests", () => {
 
 			specs.lb.machineType = "new-type";
 			lbInstance.machineType = "old-type";
-			MACHINE_TYPE["old-type"] = { cpu: 1, ram: 2, disk: 10 };
-			MACHINE_TYPE["new-type"] = { cpu: 1, ram: 2, disk: 20 };
+			MachineType["old-type"] = { cpu: 1, ram: 2, disk: 10 };
+			MachineType["new-type"] = { cpu: 1, ram: 2, disk: 20 };
 
 			await setupLBExecutor.execute(specs);
 
@@ -131,8 +131,8 @@ describe("SetupLBExecutor tests", () => {
 			expect(mgcDAO.getInstanceByID).toHaveBeenCalledWith(lbInstance.id);
 			expect(mgcDAO.getInstanceByName).toHaveBeenCalledWith(lbInstance.name);
 
-			delete MACHINE_TYPE["old-type"];
-			delete MACHINE_TYPE["new-type"];
+			delete MachineType["old-type"];
+			delete MachineType["new-type"];
 		});
 
 		it("should not retype the instance if machine type is the same", async () => {
@@ -140,14 +140,14 @@ describe("SetupLBExecutor tests", () => {
 
 			specs.lb.machineType = "same-type";
 			lbInstance.machineType = "same-type";
-			MACHINE_TYPE["same-type"] = { cpu: 1, ram: 2, disk: 10 };
+			MachineType["same-type"] = { cpu: 1, ram: 2, disk: 10 };
 
 			await setupLBExecutor.execute(specs);
 
 			expect(mgcDAO.retypeInstance).not.toHaveBeenCalled();
 			expect(mgcDAO.getInstanceByName).toHaveBeenCalledWith(lbInstance.name);
 
-			delete MACHINE_TYPE["same-type"];
+			delete MachineType["same-type"];
 		});
 
 		it("should handle undefined weights in MACHINE_TYPE", async () => {

@@ -34,7 +34,21 @@ export enum InstanceStatus {
 	RETYPING_ERROR_QUOTA = "retyping_error_quota",
 }
 
-export const MACHINE_TYPE: {
+/**
+ * TODO: Refactor to use a template literal type for better clarity and type safety. Suggested approach:
+ *
+ * export type MachineKey = `BV${number}-${number}-${number}`;
+ *
+ * export const MachineType: Record<
+ *   MachineKey,
+ *   {
+ *     cpu: number;
+ *     ram: number;
+ *     disk: number;
+ *   }
+ * >
+ */
+export const MachineType: {
 	[key: string]: {
 		cpu: number;
 		ram: number;
