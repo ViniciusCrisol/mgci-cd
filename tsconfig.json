@@ -32,7 +32,6 @@
 		"noUnusedParameters": true,
 		"noImplicitReturns": true,
 		"noImplicitOverride": true,
-		"noUncheckedIndexedAccess": true,
 		"noFallthroughCasesInSwitch": true,
 		"noPropertyAccessFromIndexSignature": true
 	},

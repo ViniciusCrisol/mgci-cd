@@ -1,4 +1,5 @@
 import config from "@src/config";
+import { BlueGreenRolloutExecutor } from "@src/lib/ci/executors/blue-green-rollout-executor";
 import { SetupAppReplicasExecutor } from "@src/lib/ci/executors/setup-app-replicas-executor";
 import { SetupLBExecutor } from "@src/lib/ci/executors/setup-lb-executor";
 import { init } from "@src/lib/ci/mgc";
@@ -13,6 +14,7 @@ export async function main() {
 
 	const setupLBExecutor = new SetupLBExecutor(mgcDAO, sshFactory);
 	const setupAppExecutor = new SetupAppReplicasExecutor(mgcDAO, sshFactory);
+	const blueGreenRolloutExecutor = new BlueGreenRolloutExecutor(mgcDAO, sshFactory);
 
 	const rawSpecs = JSON.parse(readFileSync(config.specsPath, "utf-8"));
 	const specs = {
@@ -43,6 +45,7 @@ export async function main() {
 		},
 	};
 	await Promise.all([setupLBExecutor.execute(specs), setupAppExecutor.execute(specs)]);
+	await blueGreenRolloutExecutor.execute(specs);
 }
 
 if (process.argv.includes("execute")) {

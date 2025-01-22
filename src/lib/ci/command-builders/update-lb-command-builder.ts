@@ -2,16 +2,21 @@ import { LBConfig } from "@src/lib/ci";
 import { readFileSync } from "fs";
 import { join } from "path";
 
-const setupLBCommandPath = join(__dirname, "commands", "setup-lb-command.sh");
+const updateLBCommandPath = join(__dirname, "commands", "update-lb-command.sh");
 
-export class SetupLBCommandBuilder {
+export class UpdateLBCommandBuilder {
 	constructor(private readonly lbConfig: LBConfig) {}
 
 	public build() {
-		const setupLBCommand = readFileSync(setupLBCommandPath, "utf-8");
-		return `bash -c -e '\n${setupLBCommand
+		const updateLBCommand = readFileSync(updateLBCommandPath, "utf-8");
+		return `bash -c -e '\n${updateLBCommand
+			.replace(/{{ips}}/g, this.getFormattedIPs())
 			.replace(/{{config_file}}/g, this.lbConfig.file)
 			.replace(/{{config_json}}/g, this.getFormattedConfigs())}'`;
+	}
+
+	private getFormattedIPs(): string {
+		return this.lbConfig.ips.map((ip) => `    server ${ip};`).join("\n");
 	}
 
 	private getFormattedConfigs(): string {

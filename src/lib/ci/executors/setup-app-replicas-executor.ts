@@ -31,6 +31,10 @@ export class SetupAppReplicasExecutor {
 		await infiniteLoop(async () => {
 			await sshClient.run(command);
 		});
+		// The config is updated with the private IPs of the instances scheduled for rollout to avoid making
+		// repeated queries. This creates shared state between executors, which can lead to potential issues.
+		// For now, this trade-off is acceptable, but it should be revisited in the future.
+		specs.lb.config.ips.push(instance.network.privateIP);
 	}
 
 	private buildReplicaName(specs: Specs, replicaNumber: number): string {
