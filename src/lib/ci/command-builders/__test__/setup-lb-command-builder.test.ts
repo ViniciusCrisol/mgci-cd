@@ -6,8 +6,9 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get install nginx -y 2> /dev/null
 
 sudo cat <<EOF | sudo tee /config.json > /dev/null
 {
-    "ips": [],
     "file": "/config.json",
+    "replicaIDs": [],
+    "replicaIPs": [],
     "rollout": {
         "size": 5,
         "interval": 5000
@@ -19,8 +20,9 @@ EOF
 describe("SetupLBCommandBuilder tests", () => {
 	it("should replace placeholders with provided values using real file", () => {
 		const setupLBCommandBuilder = new SetupLBCommandBuilder({
-			ips: [],
 			file: "/config.json",
+			replicaIDs: [],
+			replicaIPs: [],
 			rollout: {
 				size: 5,
 				interval: 5000,

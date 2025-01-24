@@ -24,7 +24,8 @@ describe("SetupAppReplicasExecutor tests", () => {
 			lb: {
 				name: "name-lb",
 				config: {
-					ips: [],
+					replicaIPs: [],
+					replicaIDs: [],
 					file: "/config.json",
 					rollout: {
 						size: 5,
@@ -71,6 +72,7 @@ describe("SetupAppReplicasExecutor tests", () => {
 			getInstanceByID: jest.fn(),
 			getInstanceByName: jest.fn(),
 			retypeInstance: jest.fn(),
+			deleteInstance: jest.fn(),
 		});
 		sshClient = jest.mocked({
 			run: jest.fn(),

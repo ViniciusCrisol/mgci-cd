@@ -16,7 +16,7 @@ export class UpdateLBCommandBuilder {
 	}
 
 	private getFormattedIPs(): string {
-		return this.lbConfig.ips.map((ip) => `    server ${ip};`).join("\n");
+		return this.lbConfig.replicaIPs.map((ip) => `    server ${ip};`).join("\n");
 	}
 
 	private getFormattedConfigs(): string {

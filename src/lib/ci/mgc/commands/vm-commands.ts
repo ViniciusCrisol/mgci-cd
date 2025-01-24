@@ -100,4 +100,9 @@ export class VMCommands {
 			`--machine-type.name=${machineType}`,
 		]);
 	}
+
+	@mgcErrorHandler("Failed to delete instance")
+	public async deleteInstance(id: string): Promise<void> {
+		await this.commandRunner.run(["virtual-machines", "instances", "delete", `--id=${id}`, "--delete-public-ip"]);
+	}
 }

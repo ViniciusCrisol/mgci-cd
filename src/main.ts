@@ -25,8 +25,9 @@ export async function main() {
 		lb: {
 			name: rawSpecs.name + "-lb",
 			config: {
-				ips: [],
 				file: config.lb.configFile,
+				replicaIPs: [],
+				replicaIDs: [],
 				rollout: {
 					size: rawSpecs.lb.config.rollout.size,
 					interval: rawSpecs.lb.config.rollout.interval,

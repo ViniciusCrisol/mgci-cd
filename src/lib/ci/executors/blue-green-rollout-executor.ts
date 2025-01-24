@@ -18,23 +18,25 @@ export class BlueGreenRolloutExecutor {
 			);
 		}
 		const lbConfig = await this.getLBConfig(lbInstance);
+		await this.rollout(lbConfig, specs, lbInstance);
+		await this.deleteOutdatedReplicas(lbConfig);
+	}
 
+	private async rollout(lbConfig: LBConfig, specs: Specs, lbInstance: Instance) {
 		let pendingRollouts = 0;
-		const ips = [...lbConfig.ips];
+		const ips = [...lbConfig.replicaIPs];
 		// Checks the required number of replicas against the current number.
 		// Adds extra replicas if scaling up is needed or removes the excess
 		// replicas if scaling down is required.
-		for (let i = 0; i < Math.max(lbConfig.ips.length, specs.lb.config.ips.length); i++) {
+		for (let i = 0; i < Math.max(lbConfig.replicaIPs.length, specs.lb.config.replicaIPs.length); i++) {
 			// Iterates through the replicas during the blue-green deployment process.
 			// Replaces old replicas with new ones for upscaling. Removes old replicas
 			// that have no replacement for downscaling.
 			pendingRollouts++;
-			if (!specs.lb.config.ips[i]) {
-				// Removes an old replica that will not be replaced.
+			if (!specs.lb.config.replicaIPs[i]) {
 				ips.splice(i, 1);
 			} else {
-				// Replaces an old replica with the new one.
-				ips[i] = specs.lb.config.ips[i];
+				ips[i] = specs.lb.config.replicaIPs[i];
 			}
 
 			if (pendingRollouts === lbConfig.rollout.size) {
@@ -48,12 +50,20 @@ export class BlueGreenRolloutExecutor {
 		}
 	}
 
+	private async deleteOutdatedReplicas(lbConfig: LBConfig): Promise<void> {
+		await Promise.all(
+			lbConfig.replicaIDs.map(async (id) => {
+				await this.mgcDAO.deleteInstance(id);
+			}),
+		);
+	}
+
 	private getUpdatedLBConfig(lbConfig: LBConfig, ips: string[]): LBConfig {
 		// Creates a new LB configuration object with the updated list of IPs,
 		// while preserving all other properties from the existing configuration.
 		// This approach avoids directly modifying the Specs state, ensuring the
 		// original data remains unchanged.
-		return { ...lbConfig, ips: ips };
+		return { ...lbConfig, replicaIPs: ips };
 	}
 
 	private async getLBConfig(lbInstance: Instance): Promise<LBConfig> {

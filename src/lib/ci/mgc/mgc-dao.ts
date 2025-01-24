@@ -7,6 +7,7 @@ export interface IMGCDAO {
 	getInstanceByID(id: string): Promise<Instance | undefined>;
 	getInstanceByName(name: string): Promise<Instance | undefined>;
 	retypeInstance(id: string, machineType: string): Promise<void>;
+	deleteInstance(id: string): Promise<void>;
 }
 
 export interface CreateInstanceResult {
@@ -64,6 +65,12 @@ export class MGCDAO implements IMGCDAO {
 		// TODO: Add logging here. The logging system should
 		// be implemented within the infrastructure components.
 		await this.mgc.vm.retypeInstance(id, machineType);
+	}
+
+	public async deleteInstance(id: string): Promise<void> {
+		// TODO: Add logging here. The logging system should
+		// be implemented within the infrastructure components.
+		await this.mgc.vm.deleteInstance(id);
 	}
 
 	private mapInstance(result: QueryInstanceResult): Instance {

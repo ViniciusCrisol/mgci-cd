@@ -16,8 +16,9 @@ export type Specs = {
 };
 
 export type LBConfig = {
-	ips: string[];
 	file: string;
+	replicaIPs: string[];
+	replicaIDs: string[];
 	rollout: {
 		size: number;
 		interval: number;

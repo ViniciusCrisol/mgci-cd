@@ -13,6 +13,7 @@ describe("checkupInstance tests", () => {
 			getInstanceByID: jest.fn(),
 			getInstanceByName: jest.fn(),
 			retypeInstance: jest.fn(),
+			deleteInstance: jest.fn(),
 		};
 	});
 
