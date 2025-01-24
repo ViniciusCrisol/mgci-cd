@@ -6,8 +6,8 @@ cat /config.json
 
 describe("GetLBConfigCommandBuilder tests", () => {
 	it("should replace placeholders with provided values using real file", () => {
-		const setupLBCommandBuilder = new GetLBConfigCommandBuilder();
-		const setupLBCommand = setupLBCommandBuilder.build();
-		expect(setupLBCommand).toBe(expectedCommand);
+		const builder = new GetLBConfigCommandBuilder();
+		const command = builder.build();
+		expect(command).toBe(expectedCommand);
 	});
 });

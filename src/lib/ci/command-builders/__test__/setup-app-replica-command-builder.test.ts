@@ -44,12 +44,12 @@ sudo service nginx restart
 
 describe("SetupAppReplicaCommandBuilder tests", () => {
 	it("should replace placeholders with provided values using real file", () => {
-		const setupLBCommandBuilder = new SetupAppReplicaCommandBuilder({
+		const builder = new SetupAppReplicaCommandBuilder({
 			port: "1250",
 			image: "name:v1.0.0",
 			replicas: 2,
 		});
-		const setupLBCommand = setupLBCommandBuilder.build();
-		expect(setupLBCommand).toBe(expectedCommand);
+		const command = builder.build();
+		expect(command).toBe(expectedCommand);
 	});
 });

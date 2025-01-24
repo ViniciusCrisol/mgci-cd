@@ -19,7 +19,7 @@ EOF
 
 describe("SetupLBCommandBuilder tests", () => {
 	it("should replace placeholders with provided values using real file", () => {
-		const setupLBCommandBuilder = new SetupLBCommandBuilder({
+		const builder = new SetupLBCommandBuilder({
 			file: "/config.json",
 			replicaIDs: [],
 			replicaIPs: [],
@@ -28,7 +28,7 @@ describe("SetupLBCommandBuilder tests", () => {
 				interval: 5000,
 			},
 		});
-		const setupLBCommand = setupLBCommandBuilder.build();
-		expect(setupLBCommand).toBe(expectedCommand);
+		const command = builder.build();
+		expect(command).toBe(expectedCommand);
 	});
 });
