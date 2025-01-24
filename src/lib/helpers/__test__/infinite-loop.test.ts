@@ -1,5 +1,5 @@
 import { ExecutionError } from "@src/lib/errors";
-import { infiniteLoop } from "@src/lib/helpers/infinite-loop";
+import infiniteLoop from "@src/lib/helpers/infinite-loop";
 
 describe("infiniteLoop tests", () => {
 	it("should resolve the promise if the function succeeds", async () => {

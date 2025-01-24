@@ -1,7 +1,7 @@
 import config from "@src/config";
-import { BlueGreenRolloutExecutor } from "@src/lib/ci/executors/blue-green-rollout-executor";
-import { SetupAppReplicasExecutor } from "@src/lib/ci/executors/setup-app-replicas-executor";
-import { SetupLBExecutor } from "@src/lib/ci/executors/setup-lb-executor";
+import BlueGreenRolloutExecutor from "@src/lib/ci/executors/blue-green-rollout-executor";
+import SetupAppReplicasExecutor from "@src/lib/ci/executors/setup-app-replicas-executor";
+import SetupLBExecutor from "@src/lib/ci/executors/setup-lb-executor";
 import { init } from "@src/lib/ci/mgc";
 import { MGCDAO } from "@src/lib/ci/mgc/mgc-dao";
 import { SSHFactory } from "@src/lib/ci/ssh/ssh-factory";

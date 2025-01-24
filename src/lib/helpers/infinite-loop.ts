@@ -1,8 +1,8 @@
 import config from "@src/config";
 import { ExecutionError } from "@src/lib/errors";
-import { timeout } from "@src/lib/helpers/timeout";
+import timeout from "@src/lib/helpers/timeout";
 
-export async function infiniteLoop<T>(
+export default async function infiniteLoop<T>(
 	fn: () => Promise<T>,
 	interval: number = config.infiniteLoop.interval,
 	maxRetries: number = config.infiniteLoop.maxRetries,

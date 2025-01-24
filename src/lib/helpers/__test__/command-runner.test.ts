@@ -1,5 +1,5 @@
 import { ExecutionError } from "@src/lib/errors";
-import { CommandRunner } from "@src/lib/helpers/command-runner";
+import CommandRunner from "@src/lib/helpers/command-runner";
 import { execFile } from "child_process";
 
 jest.mock("child_process");

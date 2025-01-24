@@ -1,5 +1,5 @@
 import { Specs } from "@src/lib/ci";
-import { SetupLBExecutor } from "@src/lib/ci/executors/setup-lb-executor";
+import SetupLBExecutor from "@src/lib/ci/executors/setup-lb-executor";
 import { Instance, InstanceStatus, MachineType } from "@src/lib/ci/mgc";
 import { IMGCDAO } from "@src/lib/ci/mgc/mgc-dao";
 import { ISSHClient } from "@src/lib/ci/ssh/ssh-client";

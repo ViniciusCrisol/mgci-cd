@@ -1,14 +1,14 @@
 import { Instance, InstanceStatus } from "@src/lib/ci/mgc";
 import { IMGCDAO } from "@src/lib/ci/mgc/mgc-dao";
 import { ExecutionError } from "@src/lib/errors";
-import { infiniteLoop } from "@src/lib/helpers/infinite-loop";
+import infiniteLoop from "@src/lib/helpers/infinite-loop";
 
 /**
  * Checks the status of an instance by its ID and returns
  * the instance if it is completed. If the instance is in
  * an error state, it throws an ExecutionError.
  */
-export async function checkupInstance(id: string, mgcDAO: IMGCDAO): Promise<Instance> {
+export default async function checkupInstance(id: string, mgcDAO: IMGCDAO): Promise<Instance> {
 	return await infiniteLoop(async () => {
 		const instance = await mgcDAO.getInstanceByID(id);
 		if (instance) {

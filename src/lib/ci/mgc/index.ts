@@ -1,5 +1,5 @@
 import { VMCommands } from "@src/lib/ci/mgc/commands/vm-commands";
-import { CommandRunner } from "@src/lib/helpers/command-runner";
+import CommandRunner from "@src/lib/helpers/command-runner";
 import { join } from "path";
 
 export type MGC = {

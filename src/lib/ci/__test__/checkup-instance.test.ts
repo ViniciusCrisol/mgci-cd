@@ -1,5 +1,5 @@
 import config from "@src/config";
-import { checkupInstance } from "@src/lib/ci/checkup-instance";
+import checkupInstance from "@src/lib/ci/checkup-instance";
 import { InstanceStatus } from "@src/lib/ci/mgc";
 import { IMGCDAO } from "@src/lib/ci/mgc/mgc-dao";
 import { ExecutionError } from "@src/lib/errors";

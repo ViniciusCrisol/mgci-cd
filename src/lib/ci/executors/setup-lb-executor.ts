@@ -1,13 +1,13 @@
 import { Specs } from "@src/lib/ci";
-import { checkupInstance } from "@src/lib/ci/checkup-instance";
-import { SetupLBCommandBuilder } from "@src/lib/ci/command-builders/setup-lb-command-builder";
+import checkupInstance from "@src/lib/ci/checkup-instance";
+import SetupLBCommandBuilder from "@src/lib/ci/command-builders/setup-lb-command-builder";
 import { Instance, MachineType } from "@src/lib/ci/mgc";
 import { IMGCDAO } from "@src/lib/ci/mgc/mgc-dao";
 import { ISSHFactory } from "@src/lib/ci/ssh/ssh-factory";
 import { ValidationError } from "@src/lib/errors";
-import { infiniteLoop } from "@src/lib/helpers/infinite-loop";
+import infiniteLoop from "@src/lib/helpers/infinite-loop";
 
-export class SetupLBExecutor {
+export default class SetupLBExecutor {
 	constructor(private readonly mgcDAO: IMGCDAO, private readonly sshFactory: ISSHFactory) {}
 
 	public async execute(specs: Specs): Promise<void> {

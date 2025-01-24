@@ -5,7 +5,7 @@ import { join } from "path";
 const setupDockerCommandPath = join(__dirname, "commands", "setup-docker-command.sh");
 const setupAppReplicaCommandPath = join(__dirname, "commands", "setup-app-replica-command.sh");
 
-export class SetupAppReplicaCommandBuilder {
+export default class SetupAppReplicaCommandBuilder {
 	constructor(private readonly appConfig: AppConfig) {}
 
 	public build() {

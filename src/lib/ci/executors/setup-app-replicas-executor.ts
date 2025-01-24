@@ -1,11 +1,11 @@
 import { Specs } from "@src/lib/ci";
-import { checkupInstance } from "@src/lib/ci/checkup-instance";
-import { SetupAppReplicaCommandBuilder } from "@src/lib/ci/command-builders/setup-app-replica-command-builder";
+import checkupInstance from "@src/lib/ci/checkup-instance";
+import SetupAppReplicaCommandBuilder from "@src/lib/ci/command-builders/setup-app-replica-command-builder";
 import { IMGCDAO } from "@src/lib/ci/mgc/mgc-dao";
 import { ISSHFactory } from "@src/lib/ci/ssh/ssh-factory";
-import { infiniteLoop } from "@src/lib/helpers/infinite-loop";
+import infiniteLoop from "@src/lib/helpers/infinite-loop";
 
-export class SetupAppReplicasExecutor {
+export default class SetupAppReplicasExecutor {
 	constructor(private readonly mgcDAO: IMGCDAO, private readonly sshFactory: ISSHFactory) {}
 
 	public async execute(specs: Specs): Promise<void> {

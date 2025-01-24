@@ -1,5 +1,5 @@
 import { Specs } from "@src/lib/ci";
-import { SetupAppReplicasExecutor } from "@src/lib/ci/executors/setup-app-replicas-executor";
+import SetupAppReplicasExecutor from "@src/lib/ci/executors/setup-app-replicas-executor";
 import { Instance, InstanceStatus } from "@src/lib/ci/mgc";
 import { IMGCDAO } from "@src/lib/ci/mgc/mgc-dao";
 import { ISSHClient } from "@src/lib/ci/ssh/ssh-client";

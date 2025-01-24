@@ -1,13 +1,13 @@
 import { LBConfig, Specs } from "@src/lib/ci";
-import { GetLBConfigCommandBuilder } from "@src/lib/ci/command-builders/get-lb-config-command-build";
-import { UpdateLBCommandBuilder } from "@src/lib/ci/command-builders/update-lb-command-builder";
+import GetLBConfigCommandBuilder from "@src/lib/ci/command-builders/get-lb-config-command-build";
+import UpdateLBCommandBuilder from "@src/lib/ci/command-builders/update-lb-command-builder";
 import { Instance } from "@src/lib/ci/mgc";
 import { IMGCDAO } from "@src/lib/ci/mgc/mgc-dao";
 import { ISSHFactory } from "@src/lib/ci/ssh/ssh-factory";
 import { ExecutionError } from "@src/lib/errors";
-import { timeout } from "@src/lib/helpers/timeout";
+import timeout from "@src/lib/helpers/timeout";
 
-export class BlueGreenRolloutExecutor {
+export default class BlueGreenRolloutExecutor {
 	constructor(private readonly mgcDAO: IMGCDAO, private readonly sshFactory: ISSHFactory) {}
 
 	public async execute(specs: Specs): Promise<void> {

@@ -21,6 +21,7 @@ export default function mgcErrorHandler(errorPrefix: string) {
 		return propertyDescriptor;
 	};
 }
+
 function handleError(error: unknown, errorPrefix: string): never {
 	const errorMessage = error instanceof Error ? error.message : String(error);
 	const errorMapping = {

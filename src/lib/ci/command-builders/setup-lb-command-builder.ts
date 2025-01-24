@@ -4,7 +4,7 @@ import { join } from "path";
 
 const setupLBCommandPath = join(__dirname, "commands", "setup-lb-command.sh");
 
-export class SetupLBCommandBuilder {
+export default class SetupLBCommandBuilder {
 	constructor(private readonly lbConfig: LBConfig) {}
 
 	public build() {

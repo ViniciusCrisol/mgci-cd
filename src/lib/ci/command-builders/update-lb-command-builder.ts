@@ -4,7 +4,7 @@ import { join } from "path";
 
 const updateLBCommandPath = join(__dirname, "commands", "update-lb-command.sh");
 
-export class UpdateLBCommandBuilder {
+export default class UpdateLBCommandBuilder {
 	constructor(private readonly lbConfig: LBConfig) {}
 
 	public build() {

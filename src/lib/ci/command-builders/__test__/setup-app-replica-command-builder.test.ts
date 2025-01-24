@@ -1,4 +1,4 @@
-import { SetupAppReplicaCommandBuilder } from "@src/lib/ci/command-builders/setup-app-replica-command-builder";
+import SetupAppReplicaCommandBuilder from "@src/lib/ci/command-builders/setup-app-replica-command-builder";
 
 const expectedCommand = `bash -c -e '
 sudo DEBIAN_FRONTEND=noninteractive apt-get update -y 2> /dev/null

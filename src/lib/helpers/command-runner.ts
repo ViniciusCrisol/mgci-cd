@@ -1,7 +1,7 @@
 import { ExecutionError } from "@src/lib/errors";
 import { execFile } from "child_process";
 
-export class CommandRunner {
+export default class CommandRunner {
 	constructor(
 		private readonly cliPath: string,
 		private readonly globalArgs: string[],

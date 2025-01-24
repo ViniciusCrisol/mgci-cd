@@ -4,7 +4,7 @@ import { join } from "path";
 
 const getLBConfigCommandPath = join(__dirname, "commands", "get-lb-config-command.sh");
 
-export class GetLBConfigCommandBuilder {
+export default class GetLBConfigCommandBuilder {
 	constructor() {}
 
 	public build() {
